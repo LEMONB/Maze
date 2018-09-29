@@ -30,7 +30,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Move(Side movement)
     {
-        if (mapGen.GetComponent<MapGenerator>().nodes[currI, currJ].GetComponent<Node>().IsAllowed(movement))
+        if (mapGen.GetComponent<MapGenerator>().nodes[currI, currJ].GetComponent<Node>().WallExists(movement))
             switch (movement)
             {
                 case Side.Left:

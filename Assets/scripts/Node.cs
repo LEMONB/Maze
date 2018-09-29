@@ -22,14 +22,14 @@ public class Node : MonoBehaviour
         }
     }
 
-    void Start()
-    {
-    }
+    // void Start()
+    // {
+    // }
 
-    void Update()
-    {
+    // void Update()
+    // {
 
-    }
+    // }
 
     public void AddWall(Side side)
     {
@@ -52,7 +52,7 @@ public class Node : MonoBehaviour
         }
     }
 
-    public bool IsAllowed(Side side)
+    public bool WallExists(Side side)
     {
         return !walls[(int)side];
     }

@@ -34,7 +34,15 @@ public class MapGenerator : MonoBehaviour
             {
                 if (i == height - 1 && j == width - 1)
                     nodes[i, j] = Instantiate(finishPrefab, new Vector3(3 * j, 3 * (-i), 1), Quaternion.identity);
-                nodes[i, j] = Instantiate(nodePrefab, new Vector3(3 * j, 3 * (-i), 1), Quaternion.identity);
+                else
+                    nodes[i, j] = Instantiate(nodePrefab, new Vector3(3 * j, 3 * (-i), 1), Quaternion.identity);
+
+                // if (i == height - 1 && j == width - 1)
+                //     nodes[i, j] = Instantiate(finishPrefab, new Vector3(3 * j * 10f / fieldHeight, 3 * (-i) * 10f / fieldWidth, 1), Quaternion.identity);
+                // else
+                //     nodes[i, j] = Instantiate(nodePrefab, new Vector3(3 * j * 10f / fieldHeight, 3 * (-i) * 10f / fieldWidth, 1), Quaternion.identity);
+
+                // nodes[i, j].transform.localScale = new Vector3(10f / fieldWidth, 10f / fieldHeight, 1f);
 
                 if (i == 0)
                     BuildWall(i, j, Side.Up);
@@ -55,7 +63,16 @@ public class MapGenerator : MonoBehaviour
                 if (nodes[i, j].GetComponent<Node>().SetNumber == 0)
                 {
                     // nodes[i, j].GetComponent<Node>().SetNumber = j + 1;
-                    sets[setsGlobalNumber].Add(nodes[i, j]);
+                    if (sets.ContainsKey(setsGlobalNumber))
+                    {
+                        sets[setsGlobalNumber].Add(nodes[i, j]);
+                    }
+                    else
+                    {
+                        List<GameObject> list = new List<GameObject>();
+                        list.Add(nodes[i, j]);
+                        sets.Add(setsGlobalNumber, list);
+                    }
                     nodes[i, j].GetComponent<Node>().SetNumber = setsGlobalNumber++;
                 }
             }
@@ -63,7 +80,7 @@ public class MapGenerator : MonoBehaviour
             for (int j = 1; j < width; j++)         // Building Vertical walls and removing redundant sets
             {
                 if (i > 0 && nodes[i, j].GetComponent<Node>().SetNumber == nodes[i, j - 1].GetComponent<Node>().SetNumber               // Removing cycles
-                && nodes[i, j].GetComponent<Node>().IsAllowed(Side.Up) && nodes[i, j - 1].GetComponent<Node>().IsAllowed(Side.Up))
+                && nodes[i, j].GetComponent<Node>().WallExists(Side.Up) && nodes[i, j - 1].GetComponent<Node>().WallExists(Side.Up))
                 {
                     BuildWall(i, j, Side.Left);
                 }
@@ -71,7 +88,10 @@ public class MapGenerator : MonoBehaviour
                 {
                     if (Random.Range(0, 2) == 0)
                     {
-                        nodes[i, j].GetComponent<Node>().SetNumber = nodes[i, j - 1].GetComponent<Node>().SetNumber;
+                        sets[nodes[i, j].GetComponent<Node>().SetNumber].AddRange(sets[nodes[i, j - 1].GetComponent<Node>().SetNumber]);
+                        sets.Remove(nodes[i, j - 1].GetComponent<Node>().SetNumber);
+                        UpdateNodesSetNumbers(sets[nodes[i, j].GetComponent<Node>().SetNumber]);
+                        // nodes[i, j].GetComponent<Node>().SetNumber = nodes[i, j - 1].GetComponent<Node>().SetNumber;
                     }
                     else
                     {
@@ -109,14 +129,23 @@ public class MapGenerator : MonoBehaviour
             if (i < height - 1)
                 for (int j = 0; j < width; j++)                 // Creating new row
                 {
-                    if (nodes[i + 1, j].GetComponent<Node>().IsAllowed(Side.Up))
+                    if (nodes[i + 1, j].GetComponent<Node>().WallExists(Side.Up))
                     {
-                        nodes[i + 1, j].GetComponent<Node>().SetNumber = nodes[i, j].GetComponent<Node>().SetNumber;
+                        sets[nodes[i, j].GetComponent<Node>().SetNumber].Add(nodes[i + 1, j]);
+                        UpdateNodesSetNumbers(sets[nodes[i, j].GetComponent<Node>().SetNumber]);
+                        // nodes[i + 1, j].GetComponent<Node>().SetNumber = nodes[i, j].GetComponent<Node>().SetNumber;
                     }
                 }
         }
     }
 
+    private void UpdateNodesSetNumbers(List<GameObject> set)
+    {
+        foreach (var item in set)
+        {
+            item.GetComponent<Node>().SetNumber = set[0].GetComponent<Node>().SetNumber;
+        }
+    }
 
     public void BuildWall(int i, int j, Side side)
     {
@@ -124,6 +153,7 @@ public class MapGenerator : MonoBehaviour
         {
             case Side.Up:
                 Instantiate(wallPrefab, new Vector3(nodes[i, j].transform.position.x, nodes[i, j].transform.position.y + 1.5f, nodes[i, j].transform.position.z), Quaternion.AngleAxis(90, new Vector3(0, 0, 1)));
+                // gO.transform.localScale = new Vector3(10f / fieldWidth, 10f / fieldHeight, 1f);
                 nodes[i, j].GetComponent<Node>().AddWall(side);
                 if (i - 1 >= 0)
                     nodes[i - 1, j].GetComponent<Node>().AddWall(Side.Down);
