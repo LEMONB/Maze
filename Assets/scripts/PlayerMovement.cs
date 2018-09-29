@@ -6,16 +6,17 @@ public enum Side { Left = 0, Right, Up, Down };
 
 public class PlayerMovement : MonoBehaviour
 {
-    // MapGenerator mapGen;
     MapGeneratorKruskal mapGen;
+    GameController gController;
 
     int currI = 0;
     int currJ = 0;
 
     void Start()
     {
-        // mapGen = GameObject.Find("MapGenerator").GetComponent<MapGenerator>();
         mapGen = GameObject.Find("MapGenerator").GetComponent<MapGeneratorKruskal>();
+        gController = GameObject.Find("GameController").GetComponent<GameController>();
+        mapGen.nodes[currI, currJ].GetComponent<Node>().IsVisited = true;
     }
 
     void Update()
@@ -32,7 +33,6 @@ public class PlayerMovement : MonoBehaviour
 
     void Move(Side movement)
     {
-        // if (mapGen.GetComponent<MapGenerator>().nodes[currI, currJ].GetComponent<Node>().WallExists(movement))
         if (mapGen.GetComponent<MapGeneratorKruskal>().nodes[currI, currJ].GetComponent<Node>().WallExists(movement))
             switch (movement)
             {
@@ -58,5 +58,10 @@ public class PlayerMovement : MonoBehaviour
         currI -= y;
         currJ += x;
         transform.position = mapGen.nodes[currI, currJ].transform.position;
+        mapGen.nodes[currI, currJ].GetComponent<Node>().IsVisited = true;
+        if (mapGen.nodes[currI, currJ].GetComponent<Node>().isFinish)
+        {
+            gController.FinishGame();
+        }
     }
 }

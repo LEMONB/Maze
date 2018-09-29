@@ -16,7 +16,6 @@ public class MapGeneratorKruskal : MonoBehaviour
     public GameObject nodePrefab;
     public GameObject wallPrefab;
     public GameObject finishPrefab;
-    public GameObject playerPrefab;
 
     private int fieldWidth = 10;
     private int fieldHeight = 10;
@@ -26,10 +25,9 @@ public class MapGeneratorKruskal : MonoBehaviour
     private List<WallStruct> walls = new List<WallStruct>();
     private Dictionary<int, List<GameObject>> sets = new Dictionary<int, List<GameObject>>();
 
-    void Start()
+    void Awake()
     {
         GenerateMaze(fieldWidth, fieldHeight);
-        Instantiate(playerPrefab, nodes[0, 0].transform.position, Quaternion.identity);
         Camera.main.transform.position = new Vector3(fieldWidth / 2, -fieldHeight / 2 + 0.5f, Camera.main.transform.position.z);
         Camera.main.orthographicSize = fieldHeight / 2 + 1;
     }

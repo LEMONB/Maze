@@ -7,6 +7,21 @@ public class Node : MonoBehaviour
 {
     public bool[] walls = new bool[4];
 
+    public bool isFinish = false;
+    private bool isVisited = false;
+    public bool IsVisited
+    {
+        get
+        {
+            return isVisited;
+        }
+        set
+        {
+            isVisited = value;
+            GetComponent<SpriteRenderer>().color = new Color(1f, 0.5f, 0.5f, 0.5f);
+        }
+    }
+
     private int setNumber = 0;
     public int SetNumber
     {
