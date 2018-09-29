@@ -22,15 +22,16 @@ public class MapGeneratorKruskal : MonoBehaviour
     private int fieldHeight = 10;
 
     public GameObject[,] nodes;
-    int setsGlobalNumber = 1;
 
-    List<WallStruct> walls = new List<WallStruct>();
-    Dictionary<int, List<GameObject>> sets = new Dictionary<int, List<GameObject>>();
+    private List<WallStruct> walls = new List<WallStruct>();
+    private Dictionary<int, List<GameObject>> sets = new Dictionary<int, List<GameObject>>();
 
     void Start()
     {
         GenerateMaze(fieldWidth, fieldHeight);
         Instantiate(playerPrefab, nodes[0, 0].transform.position, Quaternion.identity);
+        Camera.main.transform.position = new Vector3(fieldWidth / 2, -fieldHeight / 2 + 0.5f, Camera.main.transform.position.z);
+        Camera.main.orthographicSize = fieldHeight / 2 + 1;
     }
 
     void GenerateMaze(int width, int height)
@@ -42,16 +43,9 @@ public class MapGeneratorKruskal : MonoBehaviour
             for (int j = 0; j < width; j++)
             {
                 if (i == height - 1 && j == width - 1)
-                    nodes[i, j] = Instantiate(finishPrefab, new Vector3(3 * j, 3 * (-i), 1), Quaternion.identity);
+                    nodes[i, j] = Instantiate(finishPrefab, new Vector3(j, (-i), 1), Quaternion.identity);
                 else
-                    nodes[i, j] = Instantiate(nodePrefab, new Vector3(3 * j, 3 * (-i), 1), Quaternion.identity);
-
-                // if (i == height - 1 && j == width - 1)
-                //     nodes[i, j] = Instantiate(finishPrefab, new Vector3(3 * j * 10f / fieldHeight, 3 * (-i) * 10f / fieldWidth, 1), Quaternion.identity);
-                // else
-                //     nodes[i, j] = Instantiate(nodePrefab, new Vector3(3 * j * 10f / fieldHeight, 3 * (-i) * 10f / fieldWidth, 1), Quaternion.identity);
-
-                // nodes[i, j].transform.localScale = new Vector3(10f / fieldWidth, 10f / fieldHeight, 1f);
+                    nodes[i, j] = Instantiate(nodePrefab, new Vector3(j, (-i), 1), Quaternion.identity);
 
                 if (i == 0)
                     BuildWall(i, j, Side.Up);
@@ -141,26 +135,25 @@ public class MapGeneratorKruskal : MonoBehaviour
         switch (side)
         {
             case Side.Up:
-                wallGO = Instantiate(wallPrefab, new Vector3(nodes[i, j].transform.position.x, nodes[i, j].transform.position.y + 1.5f, nodes[i, j].transform.position.z), Quaternion.AngleAxis(90, new Vector3(0, 0, 1)));
-                // gO.transform.localScale = new Vector3(10f / fieldWidth, 10f / fieldHeight, 1f);
+                wallGO = Instantiate(wallPrefab, new Vector3(nodes[i, j].transform.position.x, nodes[i, j].transform.position.y + 0.5f, nodes[i, j].transform.position.z), Quaternion.AngleAxis(90, new Vector3(0, 0, 1)));
                 nodes[i, j].GetComponent<Node>().AddWall(side);
                 if (i - 1 >= 0)
                     nodes[i - 1, j].GetComponent<Node>().AddWall(Side.Down);
                 break;
             case Side.Down:
-                wallGO = Instantiate(wallPrefab, new Vector3(nodes[i, j].transform.position.x, nodes[i, j].transform.position.y - 1.5f, nodes[i, j].transform.position.z), Quaternion.AngleAxis(90, new Vector3(0, 0, 1)));
+                wallGO = Instantiate(wallPrefab, new Vector3(nodes[i, j].transform.position.x, nodes[i, j].transform.position.y - 0.5f, nodes[i, j].transform.position.z), Quaternion.AngleAxis(90, new Vector3(0, 0, 1)));
                 nodes[i, j].GetComponent<Node>().AddWall(side);
                 if (i + 1 < fieldHeight)
                     nodes[i + 1, j].GetComponent<Node>().AddWall(Side.Up);
                 break;
             case Side.Left:
-                wallGO = Instantiate(wallPrefab, new Vector3(nodes[i, j].transform.position.x - 1.5f, nodes[i, j].transform.position.y, nodes[i, j].transform.position.z), Quaternion.identity);
+                wallGO = Instantiate(wallPrefab, new Vector3(nodes[i, j].transform.position.x - 0.5f, nodes[i, j].transform.position.y, nodes[i, j].transform.position.z), Quaternion.identity);
                 nodes[i, j].GetComponent<Node>().AddWall(side);
                 if (j - 1 >= 0)
                     nodes[i, j - 1].GetComponent<Node>().AddWall(Side.Right);
                 break;
             case Side.Right:
-                wallGO = Instantiate(wallPrefab, new Vector3(nodes[i, j].transform.position.x + 1.5f, nodes[i, j].transform.position.y, nodes[i, j].transform.position.z), Quaternion.identity);
+                wallGO = Instantiate(wallPrefab, new Vector3(nodes[i, j].transform.position.x + 0.5f, nodes[i, j].transform.position.y, nodes[i, j].transform.position.z), Quaternion.identity);
                 nodes[i, j].GetComponent<Node>().AddWall(side);
                 if (j + 1 < fieldWidth)
                     nodes[i, j + 1].GetComponent<Node>().AddWall(Side.Left);

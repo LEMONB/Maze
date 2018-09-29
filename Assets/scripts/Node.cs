@@ -18,18 +18,9 @@ public class Node : MonoBehaviour
         {
             setNumber = value;
             // GetComponent<SpriteRenderer>().color = new Color(1f, (1f / value) / 8f, (8 - 1f / value) / 8f, 0.5f);
-            GetComponentInChildren<Text>().text = value.ToString();
+            // GetComponentInChildren<Text>().text = value.ToString();
         }
     }
-
-    // void Start()
-    // {
-    // }
-
-    // void Update()
-    // {
-
-    // }
 
     public void AddWall(Side side)
     {
