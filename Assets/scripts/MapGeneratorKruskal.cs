@@ -5,6 +5,14 @@ using UnityEngine;
 
 public class MapGeneratorKruskal : MonoBehaviour
 {
+    struct WallStruct
+    {
+        public GameObject gameObject;
+        public GameObject firstAdjacentNode;
+        public GameObject secondAdjacentNode;
+        public bool horizontal;
+    }
+
     public GameObject nodePrefab;
     public GameObject wallPrefab;
     public GameObject finishPrefab;
@@ -16,6 +24,7 @@ public class MapGeneratorKruskal : MonoBehaviour
     public GameObject[,] nodes;
     int setsGlobalNumber = 1;
 
+    List<WallStruct> walls = new List<WallStruct>();
     Dictionary<int, List<GameObject>> sets = new Dictionary<int, List<GameObject>>();
 
     void Start()
@@ -56,128 +65,126 @@ public class MapGeneratorKruskal : MonoBehaviour
             }
         }
 
-        for (int i = 0; i < height; i++)            // Building Maze itself
+        /////////////////
+        for (int i = 0; i < height; i++)        // Spawn Vertical Walls
         {
-            for (int j = 0; j < width; j++)             // Putting each node into a set
+            for (int j = 0; j < width - 1; j++)
             {
-                if (nodes[i, j].GetComponent<Node>().SetNumber == 0)
-                {
-                    // nodes[i, j].GetComponent<Node>().SetNumber = j + 1;
-                    if (sets.ContainsKey(setsGlobalNumber))
-                    {
-                        sets[setsGlobalNumber].Add(nodes[i, j]);
-                    }
-                    else
-                    {
-                        List<GameObject> list = new List<GameObject>();
-                        list.Add(nodes[i, j]);
-                        sets.Add(setsGlobalNumber, list);
-                    }
-                    nodes[i, j].GetComponent<Node>().SetNumber = setsGlobalNumber++;
-                }
-            }
+                WallStruct newWall = new WallStruct();
+                newWall.firstAdjacentNode = nodes[i, j];
+                newWall.secondAdjacentNode = nodes[i, j + 1];
+                newWall.gameObject = BuildWall(i, j, Side.Right);
+                newWall.horizontal = false;
 
-            for (int j = 1; j < width; j++)         // Building Vertical walls and removing redundant sets
+                walls.Add(newWall);
+            }
+        }
+
+        for (int i = 0; i < height - 1; i++)        // Spawn Horizontal Walls
+        {
+            for (int j = 0; j < width; j++)
             {
-                if (i > 0 && nodes[i, j].GetComponent<Node>().SetNumber == nodes[i, j - 1].GetComponent<Node>().SetNumber               // Removing cycles
-                && nodes[i, j].GetComponent<Node>().WallExists(Side.Up) && nodes[i, j - 1].GetComponent<Node>().WallExists(Side.Up))
-                {
-                    BuildWall(i, j, Side.Left);
-                }
-                else
-                {
-                    if (Random.Range(0, 2) == 0)
-                    {
-                        sets[nodes[i, j].GetComponent<Node>().SetNumber].AddRange(sets[nodes[i, j - 1].GetComponent<Node>().SetNumber]);
-                        sets.Remove(nodes[i, j - 1].GetComponent<Node>().SetNumber);
-                        UpdateNodesSetNumbers(sets[nodes[i, j].GetComponent<Node>().SetNumber]);
-                        // nodes[i, j].GetComponent<Node>().SetNumber = nodes[i, j - 1].GetComponent<Node>().SetNumber;
-                    }
-                    else
-                    {
-                        if (i == height - 1)
-                        {
-                            if (nodes[i, j].GetComponent<Node>().SetNumber == nodes[i, j - 1].GetComponent<Node>().SetNumber)
-                                BuildWall(i, j, Side.Left);
-                        }
-                        else
-                        {
-                            BuildWall(i, j, Side.Left);
-                        }
-                    }
-                }
-            }
+                WallStruct newWall = new WallStruct();
+                newWall.firstAdjacentNode = nodes[i, j];
+                newWall.secondAdjacentNode = nodes[i + 1, j];
+                newWall.gameObject = BuildWall(i, j, Side.Down);
+                newWall.horizontal = true;
 
-            bool exitFromSetExists = false;
-            for (int j = 0; j < width; j++)         // Building Horizontal walls
+                walls.Add(newWall);
+            }
+        }
+
+        walls.Shuffle();
+        /////////////////
+
+
+        /////////////////
+        for (int i = 0; i < height; i++)        // Assign each node to its own set
+        {
+            for (int j = 0; j < width; j++)
             {
-                if (j > 0 && nodes[i, j - 1].GetComponent<Node>().SetNumber != nodes[i, j].GetComponent<Node>().SetNumber)
-                {
-                    exitFromSetExists = false;
-                }
-
-                if (Random.Range(0, 2) == 0)
-                {
-                    exitFromSetExists = true;
-                }
-                else if (exitFromSetExists || (j < width - 1 && nodes[i, j].GetComponent<Node>().SetNumber == nodes[i, j + 1].GetComponent<Node>().SetNumber))
-                {
-                    BuildWall(i, j, Side.Down);
-                }
+                List<GameObject> list = new List<GameObject>();
+                list.Add(nodes[i, j]);
+                sets.Add(i * height + j, list);
             }
+        }
+        UpdateNodesSetNumbers(sets);
+        /////////////////
 
-            if (i < height - 1)
-                for (int j = 0; j < width; j++)                 // Creating new row
-                {
-                    if (nodes[i + 1, j].GetComponent<Node>().WallExists(Side.Up))
-                    {
-                        sets[nodes[i, j].GetComponent<Node>().SetNumber].Add(nodes[i + 1, j]);
-                        UpdateNodesSetNumbers(sets[nodes[i, j].GetComponent<Node>().SetNumber]);
-                        // nodes[i + 1, j].GetComponent<Node>().SetNumber = nodes[i, j].GetComponent<Node>().SetNumber;
-                    }
-                }
+
+        foreach (var wall in walls)
+        {
+            if (wall.firstAdjacentNode.GetComponent<Node>().SetNumber != wall.secondAdjacentNode.GetComponent<Node>().SetNumber)
+            {
+                sets[wall.firstAdjacentNode.GetComponent<Node>().SetNumber].AddRange(sets[wall.secondAdjacentNode.GetComponent<Node>().SetNumber]);
+                sets.Remove(wall.secondAdjacentNode.GetComponent<Node>().SetNumber);
+                UpdateNodesSetNumbers(sets);
+                DeconstructWall(wall);
+            }
         }
     }
 
-    private void UpdateNodesSetNumbers(List<GameObject> set)
+    private void UpdateNodesSetNumbers(Dictionary<int, List<GameObject>> dict)
     {
-        foreach (var item in set)
+        foreach (var kvp in dict)
         {
-            item.GetComponent<Node>().SetNumber = set[0].GetComponent<Node>().SetNumber;
+            foreach (var item in kvp.Value)
+            {
+                item.GetComponent<Node>().SetNumber = kvp.Key;
+            }
         }
     }
 
-    public void BuildWall(int i, int j, Side side)
+    public GameObject BuildWall(int i, int j, Side side)
     {
+        GameObject wallGO;
         switch (side)
         {
             case Side.Up:
-                Instantiate(wallPrefab, new Vector3(nodes[i, j].transform.position.x, nodes[i, j].transform.position.y + 1.5f, nodes[i, j].transform.position.z), Quaternion.AngleAxis(90, new Vector3(0, 0, 1)));
+                wallGO = Instantiate(wallPrefab, new Vector3(nodes[i, j].transform.position.x, nodes[i, j].transform.position.y + 1.5f, nodes[i, j].transform.position.z), Quaternion.AngleAxis(90, new Vector3(0, 0, 1)));
                 // gO.transform.localScale = new Vector3(10f / fieldWidth, 10f / fieldHeight, 1f);
                 nodes[i, j].GetComponent<Node>().AddWall(side);
                 if (i - 1 >= 0)
                     nodes[i - 1, j].GetComponent<Node>().AddWall(Side.Down);
                 break;
             case Side.Down:
-                Instantiate(wallPrefab, new Vector3(nodes[i, j].transform.position.x, nodes[i, j].transform.position.y - 1.5f, nodes[i, j].transform.position.z), Quaternion.AngleAxis(90, new Vector3(0, 0, 1)));
+                wallGO = Instantiate(wallPrefab, new Vector3(nodes[i, j].transform.position.x, nodes[i, j].transform.position.y - 1.5f, nodes[i, j].transform.position.z), Quaternion.AngleAxis(90, new Vector3(0, 0, 1)));
                 nodes[i, j].GetComponent<Node>().AddWall(side);
                 if (i + 1 < fieldHeight)
                     nodes[i + 1, j].GetComponent<Node>().AddWall(Side.Up);
                 break;
             case Side.Left:
-                Instantiate(wallPrefab, new Vector3(nodes[i, j].transform.position.x - 1.5f, nodes[i, j].transform.position.y, nodes[i, j].transform.position.z), Quaternion.identity);
+                wallGO = Instantiate(wallPrefab, new Vector3(nodes[i, j].transform.position.x - 1.5f, nodes[i, j].transform.position.y, nodes[i, j].transform.position.z), Quaternion.identity);
                 nodes[i, j].GetComponent<Node>().AddWall(side);
                 if (j - 1 >= 0)
                     nodes[i, j - 1].GetComponent<Node>().AddWall(Side.Right);
                 break;
             case Side.Right:
-                Instantiate(wallPrefab, new Vector3(nodes[i, j].transform.position.x + 1.5f, nodes[i, j].transform.position.y, nodes[i, j].transform.position.z), Quaternion.identity);
+                wallGO = Instantiate(wallPrefab, new Vector3(nodes[i, j].transform.position.x + 1.5f, nodes[i, j].transform.position.y, nodes[i, j].transform.position.z), Quaternion.identity);
                 nodes[i, j].GetComponent<Node>().AddWall(side);
                 if (j + 1 < fieldWidth)
                     nodes[i, j + 1].GetComponent<Node>().AddWall(Side.Left);
                 break;
             default:
+                wallGO = null;
                 break;
+        }
+
+        return wallGO;
+    }
+
+    void DeconstructWall(WallStruct wall)
+    {
+        Destroy(wall.gameObject);
+        if (wall.horizontal)
+        {
+            wall.firstAdjacentNode.GetComponent<Node>().RemoveWall(Side.Down);
+            wall.secondAdjacentNode.GetComponent<Node>().RemoveWall(Side.Up);
+        }
+        else
+        {
+            wall.firstAdjacentNode.GetComponent<Node>().RemoveWall(Side.Right);
+            wall.secondAdjacentNode.GetComponent<Node>().RemoveWall(Side.Left);
         }
     }
 }

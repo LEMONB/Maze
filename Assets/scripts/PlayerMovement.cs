@@ -6,14 +6,16 @@ public enum Side { Left = 0, Right, Up, Down };
 
 public class PlayerMovement : MonoBehaviour
 {
-    MapGenerator mapGen;
+    // MapGenerator mapGen;
+    MapGeneratorKruskal mapGen;
 
     int currI = 0;
     int currJ = 0;
 
     void Start()
     {
-        mapGen = GameObject.Find("MapGenerator").GetComponent<MapGenerator>();
+        // mapGen = GameObject.Find("MapGenerator").GetComponent<MapGenerator>();
+        mapGen = GameObject.Find("MapGenerator").GetComponent<MapGeneratorKruskal>();
     }
 
     void Update()
@@ -30,7 +32,8 @@ public class PlayerMovement : MonoBehaviour
 
     void Move(Side movement)
     {
-        if (mapGen.GetComponent<MapGenerator>().nodes[currI, currJ].GetComponent<Node>().WallExists(movement))
+        // if (mapGen.GetComponent<MapGenerator>().nodes[currI, currJ].GetComponent<Node>().WallExists(movement))
+        if (mapGen.GetComponent<MapGeneratorKruskal>().nodes[currI, currJ].GetComponent<Node>().WallExists(movement))
             switch (movement)
             {
                 case Side.Left:

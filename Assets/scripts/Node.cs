@@ -52,6 +52,27 @@ public class Node : MonoBehaviour
         }
     }
 
+    public void RemoveWall(Side side)
+    {
+        switch (side)
+        {
+            case Side.Left:
+                walls[(int)Side.Left] = false;
+                break;
+            case Side.Right:
+                walls[(int)Side.Right] = false;
+                break;
+            case Side.Up:
+                walls[(int)Side.Up] = false;
+                break;
+            case Side.Down:
+                walls[(int)Side.Down] = false;
+                break;
+            default:
+                break;
+        }
+    }
+
     public bool WallExists(Side side)
     {
         return !walls[(int)side];
