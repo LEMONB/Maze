@@ -4,6 +4,11 @@ using UnityEngine;
 
 public static class Utilities
 {
+    public static int fieldWidth = 10;
+    public static int fieldHeight = 10;
+
+    public static bool ShowConstruction;
+
     private static System.Random rng = new System.Random();
 
     public static void Shuffle<T>(this IList<T> list)
@@ -18,5 +23,4 @@ public static class Utilities
             list[n] = value;
         }
     }
-
 }

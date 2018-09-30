@@ -27,12 +27,12 @@ public class MapGeneratorKruskal : MonoBehaviour
 
     void Awake()
     {
-        GenerateMaze(fieldWidth, fieldHeight);
-        Camera.main.transform.position = new Vector3(fieldWidth / 2, -fieldHeight / 2 + 0.5f, Camera.main.transform.position.z);
-        Camera.main.orthographicSize = fieldHeight / 2 + 1;
+        // GenerateMaze(fieldWidth, fieldHeight);
+        // Camera.main.transform.position = new Vector3(fieldWidth / 2, -fieldHeight / 2 + 0.5f, Camera.main.transform.position.z);
+        // Camera.main.orthographicSize = fieldHeight / 2 + 1;
     }
 
-    void GenerateMaze(int width, int height)
+    public void GenerateMaze(int width, int height)
     {
         nodes = new GameObject[height, width];
 
@@ -104,6 +104,27 @@ public class MapGeneratorKruskal : MonoBehaviour
         /////////////////
 
 
+        if (Utilities.ShowConstruction)
+        {
+            StartCoroutine(Step());
+        }
+        else
+        {
+            foreach (var wall in walls)
+            {
+                if (wall.firstAdjacentNode.GetComponent<Node>().SetNumber != wall.secondAdjacentNode.GetComponent<Node>().SetNumber)
+                {
+                    sets[wall.firstAdjacentNode.GetComponent<Node>().SetNumber].AddRange(sets[wall.secondAdjacentNode.GetComponent<Node>().SetNumber]);
+                    sets.Remove(wall.secondAdjacentNode.GetComponent<Node>().SetNumber);
+                    UpdateNodesSetNumbers(sets);
+                    DeconstructWall(wall);
+                }
+            }
+        }
+    }
+
+    private IEnumerator Step()
+    {
         foreach (var wall in walls)
         {
             if (wall.firstAdjacentNode.GetComponent<Node>().SetNumber != wall.secondAdjacentNode.GetComponent<Node>().SetNumber)
@@ -113,6 +134,8 @@ public class MapGeneratorKruskal : MonoBehaviour
                 UpdateNodesSetNumbers(sets);
                 DeconstructWall(wall);
             }
+
+            yield return new WaitForSeconds(3f / walls.Count);
         }
     }
 
