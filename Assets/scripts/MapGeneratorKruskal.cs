@@ -25,6 +25,8 @@ public class MapGeneratorKruskal : MonoBehaviour
     private List<WallStruct> walls = new List<WallStruct>();
     private Dictionary<int, List<GameObject>> sets = new Dictionary<int, List<GameObject>>();
 
+    public bool mapIsGenerated = false;
+
     void Awake()
     {
         // GenerateMaze(fieldWidth, fieldHeight);
@@ -137,6 +139,8 @@ public class MapGeneratorKruskal : MonoBehaviour
 
             yield return new WaitForSeconds(3f / walls.Count);
         }
+
+        mapIsGenerated = true;
     }
 
     private void UpdateNodesSetNumbers(Dictionary<int, List<GameObject>> dict)

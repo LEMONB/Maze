@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -21,8 +22,8 @@ public class GameController : MonoBehaviour
     {
         mapGen = GameObject.Find("MapGenerator").GetComponent<MapGeneratorKruskal>();
         mapGen.GenerateMaze(Utilities.fieldWidth, Utilities.fieldHeight);
-        Camera.main.transform.position = new Vector3(Utilities.fieldWidth / 2, -Utilities.fieldHeight / 2 + 0.5f, Camera.main.transform.position.z);
-        Camera.main.orthographicSize = Utilities.fieldHeight / 2 + 1;
+        Camera.main.transform.position = new Vector3(Utilities.fieldWidth / 2 - 0.5f, -Utilities.fieldHeight / 2 + 0.5f, Camera.main.transform.position.z);
+        Camera.main.orthographicSize = Math.Max(Utilities.fieldHeight, Utilities.fieldWidth) + 1;
 
         showConstrToggle.isOn = Utilities.ShowConstruction;
         // playerGO = Instantiate(playerPrefab, mapGen.nodes[0, 0].transform.position, Quaternion.identity);

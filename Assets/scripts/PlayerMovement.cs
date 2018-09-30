@@ -12,15 +12,24 @@ public class PlayerMovement : MonoBehaviour
     int currI = 0;
     int currJ = 0;
 
+    int screenWidth;
+    int screenHeight;
+
     void Start()
     {
         mapGen = GameObject.Find("MapGenerator").GetComponent<MapGeneratorKruskal>();
         gController = GameObject.Find("GameController").GetComponent<GameController>();
         mapGen.nodes[currI, currJ].GetComponent<Node>().IsVisited = true;
+
+        screenWidth = Screen.width;
+        screenHeight = Screen.height;
     }
 
     void Update()
     {
+        if (!mapGen.mapIsGenerated)
+            return;
+
         if (Input.GetKeyDown(KeyCode.A))
             Move(Side.Left);
         if (Input.GetKeyDown(KeyCode.D))
@@ -29,6 +38,30 @@ public class PlayerMovement : MonoBehaviour
             Move(Side.Up);
         if (Input.GetKeyDown(KeyCode.S))
             Move(Side.Down);
+
+        // Touch input
+        if (Input.GetMouseButtonDown(0))
+        {
+            int x = (int)Input.mousePosition.x;
+            int y = (int)Input.mousePosition.y;
+
+            if (y >= screenHeight / 2f)
+            {
+                Move(Side.Up);
+            }
+            else if (x <= screenWidth / 3f && y > x)
+            {
+                Move(Side.Left);
+            }
+            else if (x >= 2f / 3f * screenWidth && (screenWidth - x) < y)
+            {
+                Move(Side.Right);
+            }
+            else if (y <= screenWidth / 3f && y <= x)
+            {
+                Move(Side.Down);
+            }
+        }
     }
 
     void Move(Side movement)
