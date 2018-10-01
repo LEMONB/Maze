@@ -7,7 +7,8 @@ public static class Utilities
     public static int fieldWidth = 10;
     public static int fieldHeight = 10;
 
-    public static bool ShowConstruction;
+    public static bool ShowConstruction = false;
+    public static bool ShowControls = true;
 
     private static System.Random rng = new System.Random();
 

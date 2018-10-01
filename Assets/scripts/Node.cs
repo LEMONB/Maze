@@ -7,6 +7,8 @@ public class Node : MonoBehaviour
 {
     public bool[] walls = new bool[4];
 
+    public Sprite visitedNodeSprite;
+
     public bool isFinish = false;
     private bool isVisited = false;
     public bool IsVisited
@@ -18,7 +20,8 @@ public class Node : MonoBehaviour
         set
         {
             isVisited = value;
-            GetComponent<SpriteRenderer>().color = new Color(1f, 0.5f, 0.5f, 0.5f);
+            GetComponent<SpriteRenderer>().sprite = visitedNodeSprite;
+            // GetComponent<SpriteRenderer>().color = new Color(1f, 0.2f, 0.2f, 0.5f);
         }
     }
 
@@ -79,7 +82,7 @@ public class Node : MonoBehaviour
         }
     }
 
-    public bool WallExists(Side side)
+    public bool AllowedMove(Side side)
     {
         return !walls[(int)side];
     }

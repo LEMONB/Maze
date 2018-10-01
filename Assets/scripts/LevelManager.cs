@@ -19,6 +19,16 @@ public class LevelManager : MonoBehaviour
 
         ChangeCanvas(mainMenuCanvas);
 
+        if (PlayerPrefs.GetInt("FirstLaunch", 0) == 0)
+        {
+            Utilities.ShowControls = true;
+            PlayerPrefs.SetInt("FirstLaunch", 1);
+        }
+        else
+        {
+            Utilities.ShowControls = false;
+        }
+
         //GameObject[] buttons = FindObjectsOfType<GameObject>();
 
         //foreach (GameObject buttonGO in buttons)
@@ -142,10 +152,26 @@ public class LevelManager : MonoBehaviour
     // 	summaryPoints.GetComponent<Text>().text = PlayerPrefs.GetFloat("SummaryPoints", 0f).ToString("F0");
     // }
 
-    // public void ChangeMode(int newMode)
-    // {
-    // 	Utilities.ChangeMode(newMode);
-    // }
+    public void ChangeMode(int newMode)
+    {
+        switch (newMode)
+        {
+            case 0:
+                Utilities.fieldHeight = 10;
+                Utilities.fieldWidth = 10;
+                break;
+            case 1:
+                Utilities.fieldHeight = 20;
+                Utilities.fieldWidth = 20;
+                break;
+            case 2:
+                Utilities.fieldHeight = 30;
+                Utilities.fieldWidth = 30;
+                break;
+            default:
+                break;
+        }
+    }
 
     public void LoadScene(string sceneName)
     {

@@ -80,7 +80,7 @@ public class MapGenerator : MonoBehaviour
             for (int j = 1; j < width; j++)         // Building Vertical walls and removing redundant sets
             {
                 if (i > 0 && nodes[i, j].GetComponent<Node>().SetNumber == nodes[i, j - 1].GetComponent<Node>().SetNumber               // Removing cycles
-                && nodes[i, j].GetComponent<Node>().WallExists(Side.Up) && nodes[i, j - 1].GetComponent<Node>().WallExists(Side.Up))
+                && nodes[i, j].GetComponent<Node>().AllowedMove(Side.Up) && nodes[i, j - 1].GetComponent<Node>().AllowedMove(Side.Up))
                 {
                     BuildWall(i, j, Side.Left);
                 }
@@ -129,7 +129,7 @@ public class MapGenerator : MonoBehaviour
             if (i < height - 1)
                 for (int j = 0; j < width; j++)                 // Creating new row
                 {
-                    if (nodes[i + 1, j].GetComponent<Node>().WallExists(Side.Up))
+                    if (nodes[i + 1, j].GetComponent<Node>().AllowedMove(Side.Up))
                     {
                         sets[nodes[i, j].GetComponent<Node>().SetNumber].Add(nodes[i + 1, j]);
                         UpdateNodesSetNumbers(sets[nodes[i, j].GetComponent<Node>().SetNumber]);

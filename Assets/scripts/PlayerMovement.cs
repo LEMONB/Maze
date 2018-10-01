@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -27,16 +28,16 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        if (!mapGen.mapIsGenerated)
+        if (!mapGen.mapIsGenerated || Time.timeScale < 0.1f)
             return;
 
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
             Move(Side.Left);
-        if (Input.GetKeyDown(KeyCode.D))
+        if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
             Move(Side.Right);
-        if (Input.GetKeyDown(KeyCode.W))
+        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
             Move(Side.Up);
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
             Move(Side.Down);
 
         // Touch input
@@ -66,7 +67,13 @@ public class PlayerMovement : MonoBehaviour
 
     void Move(Side movement)
     {
-        if (mapGen.GetComponent<MapGeneratorKruskal>().nodes[currI, currJ].GetComponent<Node>().WallExists(movement))
+        if (gController.controlsImage.activeSelf)
+        {
+            gController.controlsImage.SetActive(false);
+            Utilities.ShowControls = false;
+        }
+
+        if (mapGen.GetComponent<MapGeneratorKruskal>().nodes[currI, currJ].GetComponent<Node>().AllowedMove(movement))
             switch (movement)
             {
                 case Side.Left:
@@ -92,9 +99,10 @@ public class PlayerMovement : MonoBehaviour
         currJ += x;
         transform.position = mapGen.nodes[currI, currJ].transform.position;
         mapGen.nodes[currI, currJ].GetComponent<Node>().IsVisited = true;
+
         if (mapGen.nodes[currI, currJ].GetComponent<Node>().isFinish)
         {
-            gController.FinishGame();
+            gController.LoadScene("main");
         }
     }
 }

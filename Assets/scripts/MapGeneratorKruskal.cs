@@ -15,7 +15,6 @@ public class MapGeneratorKruskal : MonoBehaviour
 
     public GameObject nodePrefab;
     public GameObject wallPrefab;
-    public GameObject finishPrefab;
 
     private int fieldWidth = 10;
     private int fieldHeight = 10;
@@ -42,10 +41,12 @@ public class MapGeneratorKruskal : MonoBehaviour
         {
             for (int j = 0; j < width; j++)
             {
+                // if (i == height - 1 && j == width - 1)
+                //     nodes[i, j] = Instantiate(finishPrefab, new Vector3(j, (-i), 1), Quaternion.identity);
+                // else
+                nodes[i, j] = Instantiate(nodePrefab, new Vector3(j, (-i), 1), Quaternion.identity);
                 if (i == height - 1 && j == width - 1)
-                    nodes[i, j] = Instantiate(finishPrefab, new Vector3(j, (-i), 1), Quaternion.identity);
-                else
-                    nodes[i, j] = Instantiate(nodePrefab, new Vector3(j, (-i), 1), Quaternion.identity);
+                    nodes[i, j].GetComponent<Node>().isFinish = true;
 
                 if (i == 0)
                     BuildWall(i, j, Side.Up);
@@ -54,7 +55,7 @@ public class MapGeneratorKruskal : MonoBehaviour
 
                 if (j == 0)
                     BuildWall(i, j, Side.Left);
-                else if (j == width - 1)
+                else if (j == width - 1 && i != height - 1)
                     BuildWall(i, j, Side.Right);
             }
         }
@@ -122,6 +123,7 @@ public class MapGeneratorKruskal : MonoBehaviour
                     DeconstructWall(wall);
                 }
             }
+            mapIsGenerated = true;
         }
     }
 
