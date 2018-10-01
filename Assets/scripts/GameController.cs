@@ -24,7 +24,7 @@ public class GameController : MonoBehaviour
         Instantiate(playerPrefab, mapGen.nodes[0, 0].transform.position, Quaternion.identity);
 
         if (Utilities.ShowControls)
-            ShowControls();
+            controlsImage.SetActive(true);
     }
 
     public void LoadScene(string sceneName)
@@ -52,13 +52,6 @@ public class GameController : MonoBehaviour
 
     public void ShowControls()
     {
-        if (Utilities.ShowControls)
-        {
-            controlsImage.SetActive(true);
-        }
-        else
-        {
-            controlsImage.SetActive(false);
-        }
+        controlsImage.SetActive(true);
     }
 }
