@@ -45,6 +45,9 @@ public class MapGeneratorKruskal : MonoBehaviour
                 //     nodes[i, j] = Instantiate(finishPrefab, new Vector3(j, (-i), 1), Quaternion.identity);
                 // else
                 nodes[i, j] = Instantiate(nodePrefab, new Vector3(j, (-i), 1), Quaternion.identity);
+                nodes[i, j].GetComponent<Node>().i = i;
+                nodes[i, j].GetComponent<Node>().j = j;
+
                 if (i == height - 1 && j == width - 1)
                     nodes[i, j].GetComponent<Node>().isFinish = true;
 
@@ -54,9 +57,19 @@ public class MapGeneratorKruskal : MonoBehaviour
                     BuildWall(i, j, Side.Down);
 
                 if (j == 0)
-                    BuildWall(i, j, Side.Left);
-                else if (j == width - 1 && i != height - 1)
-                    BuildWall(i, j, Side.Right);
+                {
+                    if (i == 0)
+                        BuildWall(i, j, Side.Left, true);
+                    else
+                        BuildWall(i, j, Side.Left);
+                }
+                else if (j == width - 1)
+                {
+                    if (i == height - 1)
+                        BuildWall(i, j, Side.Right, true);
+                    else
+                        BuildWall(i, j, Side.Right);
+                }
             }
         }
 
@@ -125,6 +138,14 @@ public class MapGeneratorKruskal : MonoBehaviour
             }
             mapIsGenerated = true;
         }
+
+        foreach (var spot in nodes)
+        {
+            spot.GetComponent<Node>().PushNeighbors(nodes);
+        }
+
+        GameObject.Find("GameController").GetComponent<AStar>().FindPath(nodes[0, 0].GetComponent<Node>(), nodes[height - 1, width - 1].GetComponent<Node>());
+        // StartCoroutine(GameObject.Find("GameController").GetComponent<AStar>().FindPathCoroutine(nodes[0, 0].GetComponent<Node>(), nodes[height - 1, width - 1].GetComponent<Node>()));
     }
 
     private IEnumerator Step()
@@ -156,7 +177,7 @@ public class MapGeneratorKruskal : MonoBehaviour
         }
     }
 
-    public GameObject BuildWall(int i, int j, Side side)
+    public GameObject BuildWall(int i, int j, Side side, bool invisible = false)
     {
         GameObject wallGO;
         switch (side)
@@ -190,6 +211,10 @@ public class MapGeneratorKruskal : MonoBehaviour
                 break;
         }
 
+        if (invisible)
+        {
+            wallGO.GetComponent<SpriteRenderer>().sprite = null;
+        }
         return wallGO;
     }
 

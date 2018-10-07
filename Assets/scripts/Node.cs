@@ -9,7 +9,19 @@ public class Node : MonoBehaviour
 
     public Sprite visitedNodeSprite;
 
+    public int i;
+    public int j;
+
+    public float f = 0;
+    public float h = 0;
+    public float g = 0;
+    public bool isClosed = false;
+    public bool isOpened = false;
+    public Node previous;
+    public List<GameObject> neighbors = new List<GameObject>();
+
     public bool isFinish = false;
+
     private bool isVisited = false;
     public bool IsVisited
     {
@@ -85,5 +97,47 @@ public class Node : MonoBehaviour
     public bool AllowedMove(Side side)
     {
         return !walls[(int)side];
+    }
+
+    public void PushNeighbors(GameObject[,] nodes)
+    {
+        neighbors.Clear();
+
+        //LRUD
+        if (AllowedMove(Side.Left))
+        {
+            neighbors.Add(nodes[i, j - 1]);
+        }
+        if (AllowedMove(Side.Right))
+        {
+            neighbors.Add(nodes[i, j + 1]);
+        }
+        if (AllowedMove(Side.Up))
+        {
+            neighbors.Add(nodes[i - 1, j]);
+        }
+        if (AllowedMove(Side.Down))
+        {
+            neighbors.Add(nodes[i + 1, j]);
+        }
+
+
+        // if (this.i < arrSize - 1 && _nodes[this.i + 1][this.j].isWall == false)
+        // {
+        //     this.neighbors.push(_nodes[this.i + 1][this.j]);
+        // }
+        // if (this.i > 0 && _nodes[this.i - 1][this.j].isWall == false)
+        // {
+        //     this.neighbors.push(_nodes[this.i - 1][this.j]);
+        // }
+        // if (this.j < arrSize - 1 && _nodes[this.i][this.j + 1].isWall == false)
+        // {
+        //     this.neighbors.push(_nodes[this.i][this.j + 1]);
+        // }
+        // if (this.j > 0 && _nodes[this.i][this.j - 1].isWall == false)
+        // {
+        //     this.neighbors.push(_nodes[this.i][this.j - 1]);
+        // }
+
     }
 }
