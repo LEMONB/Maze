@@ -5,12 +5,8 @@ using UnityEngine;
 public class AStar : MonoBehaviour
 {
     MapGeneratorKruskal mapGen;
+    List<Node> path = new List<Node>();
 
-    GameObject[,] nodes;
-    List<Node> openSet = new List<Node>();
-    List<Node> closedSet = new List<Node>();
-    // List<Node> path = new List<Node>();
-    Node current;
 
     float Heuristic(Node from, Node target)
     {
@@ -20,10 +16,12 @@ public class AStar : MonoBehaviour
         return d;
     }
 
-    public void FindPath(Node startNode, Node targetNode)
+    public void FindPath(Node startNode, Node targetNode, bool visualization = true)
     {
-        openSet.Add(startNode);
+        Node current = null;
+        List<Node> openSet = new List<Node>();
 
+        openSet.Add(startNode);
 
         while (openSet.Count > 0)
         {
@@ -40,8 +38,7 @@ public class AStar : MonoBehaviour
 
             if (current == targetNode)
             {
-                ReconstructPath(current);
-                // int steps = path.Count - 1;
+                ReconstructPath(current, visualization);
                 return;
             }
 
@@ -84,12 +81,11 @@ public class AStar : MonoBehaviour
                 }
             }
         }
-        ReconstructPath(current);
+        ReconstructPath(current, visualization);
     }
 
-    void ReconstructPath(Node from)
+    void ReconstructPath(Node from, bool visualization = true)
     {
-        List<Node> path = new List<Node>();
         Node temp = from;
         path.Add(temp);
         while (temp.previous != null)
@@ -98,15 +94,12 @@ public class AStar : MonoBehaviour
             temp = temp.previous;
         }
 
-        foreach (var spot in path)
-        {
-            spot.IsVisited = true;
-        }
+        if (visualization)
+            VisualizePath();
     }
 
     IEnumerator ReconstructPathCoroutine(Node from)
     {
-        List<Node> path = new List<Node>();
         Node temp = from;
         path.Add(temp);
         while (temp.previous != null)
@@ -120,5 +113,20 @@ public class AStar : MonoBehaviour
             spot.IsVisited = true;
             yield return new WaitForSeconds(0.5f);
         }
+    }
+
+    void VisualizePath()
+    {
+        foreach (var spot in path)
+        {
+            spot.IsVisited = true;
+        }
+    }
+
+    public Node GetHint(Node startNode, Node targetNode)
+    {
+        FindPath(startNode, targetNode, false);
+        Node hintNode = path[path.Count - 2];
+        return hintNode;
     }
 }

@@ -144,7 +144,7 @@ public class MapGeneratorKruskal : MonoBehaviour
             spot.GetComponent<Node>().PushNeighbors(nodes);
         }
 
-        GameObject.Find("GameController").GetComponent<AStar>().FindPath(nodes[0, 0].GetComponent<Node>(), nodes[height - 1, width - 1].GetComponent<Node>());
+        // GameObject.Find("GameController").GetComponent<AStar>().FindPath(nodes[0, 0].GetComponent<Node>(), nodes[height - 1, width - 1].GetComponent<Node>());
         // StartCoroutine(GameObject.Find("GameController").GetComponent<AStar>().FindPathCoroutine(nodes[0, 0].GetComponent<Node>(), nodes[height - 1, width - 1].GetComponent<Node>()));
     }
 

@@ -10,8 +10,8 @@ public class PlayerMovement : MonoBehaviour
     MapGeneratorKruskal mapGen;
     GameController gController;
 
-    int currI = 0;
-    int currJ = 0;
+    public int currI = 0;
+    public int currJ = 0;
 
     int screenWidth;
     int screenHeight;
@@ -65,7 +65,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    void Move(Side movement)
+    public void Move(Side movement)
     {
         if (gController.controlsImage.activeSelf)
         {
@@ -93,7 +93,7 @@ public class PlayerMovement : MonoBehaviour
             }
     }
 
-    void Move(int x, int y)
+    public void Move(int x, int y)
     {
         currI -= y;
         currJ += x;

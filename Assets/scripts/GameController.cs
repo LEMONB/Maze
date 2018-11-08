@@ -9,6 +9,7 @@ public class GameController : MonoBehaviour
 {
     MapGeneratorKruskal mapGen;
     public GameObject playerPrefab;
+    PlayerMovement playerScript;
 
     public Button showGenerationButton;
     public Button showControlsButton;
@@ -21,7 +22,7 @@ public class GameController : MonoBehaviour
         Camera.main.transform.position = new Vector3(Utilities.fieldWidth / 2 - 0.5f, -Utilities.fieldHeight / 2 + 0.5f, Camera.main.transform.position.z);
         Camera.main.orthographicSize = Math.Max(Utilities.fieldHeight, Utilities.fieldWidth) + 1;
 
-        Instantiate(playerPrefab, mapGen.nodes[0, 0].transform.position, Quaternion.identity);
+        playerScript = Instantiate(playerPrefab, mapGen.nodes[0, 0].transform.position, Quaternion.identity).GetComponent<PlayerMovement>();
 
         if (Utilities.ShowControls)
             controlsImage.SetActive(true);
@@ -53,5 +54,13 @@ public class GameController : MonoBehaviour
     public void ShowControls()
     {
         controlsImage.SetActive(true);
+    }
+
+    public void HintMove()
+    {
+        Node hintNode = GetComponent<AStar>().GetHint(mapGen.nodes[playerScript.currI, playerScript.currJ].GetComponent<Node>(), mapGen.nodes[mapGen.nodes.GetLength(0) - 1, mapGen.nodes.GetLength(1) - 1].GetComponent<Node>());
+        int dI = hintNode.i - playerScript.currI;
+        int dJ = hintNode.j - playerScript.currJ;
+        playerScript.Move(dI, dJ);
     }
 }
