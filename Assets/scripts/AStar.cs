@@ -28,7 +28,7 @@ public class AStar : MonoBehaviour
             int winnerIndex = 0;
             for (int i = 0; i < openSet.Count; i++)
             {
-                if (openSet[i].f < openSet[winnerIndex].f)
+                if (openSet[i].F < openSet[winnerIndex].F)
                 {
                     winnerIndex = i;
                 }
@@ -43,39 +43,39 @@ public class AStar : MonoBehaviour
             }
 
             openSet.Remove(current);
-            current.isOpened = false;
-            current.isClosed = true;
+            current.IsOpened = false;
+            current.IsClosed = true;
 
             for (int i = 0; i < current.neighbors.Count; i++)
             {
                 Node neighbor = current.neighbors[i].GetComponent<Node>();
-                if (neighbor.isClosed == false)
+                if (neighbor.IsClosed == false)
                 {
-                    float tempG = current.g + Heuristic(neighbor, current);
+                    float tempG = current.G + Heuristic(neighbor, current);
 
                     // Is this a better path than before?
                     bool newPath = false;
-                    if (neighbor.isOpened)
+                    if (neighbor.IsOpened)
                     {
-                        if (tempG < neighbor.g)
+                        if (tempG < neighbor.G)
                         {
-                            neighbor.g = tempG;
+                            neighbor.G = tempG;
                             newPath = true;
                         }
                     }
                     else
                     {
-                        neighbor.g = tempG;
+                        neighbor.G = tempG;
                         newPath = true;
                         openSet.Add(neighbor);
-                        neighbor.isOpened = true;
+                        neighbor.IsOpened = true;
                     }
 
                     // Yes, it's a better path
                     if (newPath)
                     {
-                        neighbor.h = Heuristic(neighbor, targetNode);
-                        neighbor.f = neighbor.g + neighbor.h;
+                        neighbor.H = Heuristic(neighbor, targetNode);
+                        neighbor.F = neighbor.G + neighbor.H;
                         neighbor.previous = current;
                     }
                 }

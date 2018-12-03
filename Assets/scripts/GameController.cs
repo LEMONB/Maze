@@ -18,9 +18,9 @@ public class GameController : MonoBehaviour
     void Start()
     {
         mapGen = GameObject.Find("MapGenerator").GetComponent<MapGeneratorKruskal>();
-        mapGen.GenerateMaze(Utilities.fieldWidth, Utilities.fieldHeight);
-        Camera.main.transform.position = new Vector3(Utilities.fieldWidth / 2 - 0.5f, -Utilities.fieldHeight / 2 + 0.5f, Camera.main.transform.position.z);
-        Camera.main.orthographicSize = Math.Max(Utilities.fieldHeight, Utilities.fieldWidth) + 1;
+        mapGen.GenerateMaze(Utilities.FieldWidth, Utilities.FieldHeight);
+        Camera.main.transform.position = new Vector3(Utilities.FieldWidth / 2 - 0.5f, -Utilities.FieldHeight / 2 + 0.5f, Camera.main.transform.position.z);
+        Camera.main.orthographicSize = Math.Max(Utilities.FieldHeight, Utilities.FieldWidth) + 1;
 
         playerScript = Instantiate(playerPrefab, mapGen.nodes[0, 0].transform.position, Quaternion.identity).GetComponent<PlayerMovement>();
 
@@ -59,8 +59,8 @@ public class GameController : MonoBehaviour
     public void HintMove()
     {
         Node hintNode = GetComponent<AStar>().GetHint(mapGen.nodes[playerScript.currI, playerScript.currJ].GetComponent<Node>(), mapGen.nodes[mapGen.nodes.GetLength(0) - 1, mapGen.nodes.GetLength(1) - 1].GetComponent<Node>());
-        int dI = hintNode.i - playerScript.currI;
-        int dJ = hintNode.j - playerScript.currJ;
+        int dI = hintNode.I - playerScript.currI;
+        int dJ = hintNode.J - playerScript.currJ;
         playerScript.Move(dI, dJ);
     }
 }

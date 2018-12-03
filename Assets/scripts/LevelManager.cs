@@ -157,16 +157,16 @@ public class LevelManager : MonoBehaviour
         switch (newMode)
         {
             case 0:
-                Utilities.fieldHeight = 10;
-                Utilities.fieldWidth = 10;
+                Utilities.FieldHeight = 10;
+                Utilities.FieldWidth = 10;
                 break;
             case 1:
-                Utilities.fieldHeight = 20;
-                Utilities.fieldWidth = 20;
+                Utilities.FieldHeight = 20;
+                Utilities.FieldWidth = 20;
                 break;
             case 2:
-                Utilities.fieldHeight = 30;
-                Utilities.fieldWidth = 30;
+                Utilities.FieldHeight = 30;
+                Utilities.FieldWidth = 30;
                 break;
             default:
                 break;

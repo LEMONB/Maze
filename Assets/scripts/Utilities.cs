@@ -4,24 +4,33 @@ using UnityEngine;
 
 public static class Utilities
 {
-    public static int fieldWidth = 10;
-    public static int fieldHeight = 10;
 
-    public static bool ShowConstruction = false;
-    public static bool ShowControls = true;
+	public static int FieldWidth { get; set; } = 10;
 
-    private static System.Random rng = new System.Random();
+	public static int FieldHeight { get; set; } = 10;
 
-    public static void Shuffle<T>(this IList<T> list)
-    {
-        int n = list.Count;
-        while (n > 1)
-        {
-            n--;
-            int k = rng.Next(n + 1);
-            T value = list[k];
-            list[k] = list[n];
-            list[n] = value;
-        }
-    }
+
+	public static bool BuildVerticalWall { get; set; } = false;
+
+	[SerializeField]
+	public static GameObject WallPrefab { get; set; }
+
+
+	public static bool ShowConstruction { get; set; } = false;
+
+	public static bool ShowControls { get; set; } = true;
+
+	private static System.Random rng = new System.Random();
+	public static void Shuffle<T>(this IList<T> list)
+	{
+		int n = list.Count;
+		while (n > 1)
+		{
+			n--;
+			int k = rng.Next(n + 1);
+			T value = list[k];
+			list[k] = list[n];
+			list[n] = value;
+		}
+	}
 }

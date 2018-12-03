@@ -100,7 +100,7 @@ public class PlayerMovement : MonoBehaviour
         transform.position = mapGen.nodes[currI, currJ].transform.position;
         mapGen.nodes[currI, currJ].GetComponent<Node>().IsVisited = true;
 
-        if (mapGen.nodes[currI, currJ].GetComponent<Node>().isFinish)
+        if (mapGen.nodes[currI, currJ].GetComponent<Node>().IsFinish)
         {
             gController.LoadScene("main");
         }
