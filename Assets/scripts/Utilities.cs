@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum Side { Left = 0, Right, Up, Down };
+public enum Building { HorizontalWall = 0, VerticalWall, RemoveHorizontalWall, RemoveVerticalWall };
+
 public static class Utilities
 {
-
 	public static int FieldWidth { get; set; } = 10;
 
 	public static int FieldHeight { get; set; } = 10;
 
-
-	public static bool BuildVerticalWall { get; set; } = false;
+	public static Building SelectedBuilding = Building.HorizontalWall;
 
 	[SerializeField]
 	public static GameObject WallPrefab { get; set; }

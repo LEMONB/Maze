@@ -5,6 +5,10 @@ using UnityEngine.UI;
 
 public class Node : MonoBehaviour
 {
+	private CommonPrefabs prefabs;
+
+	private GameObject[] wallsObject = new GameObject[2];
+
 	private bool[] walls = new bool[4];
 
 	public Sprite visitedNodeSprite;
@@ -44,66 +48,64 @@ public class Node : MonoBehaviour
 
 	public bool IsFinish { get; set; } = false;
 
+	public void Start()
+	{
+		prefabs = FindObjectOfType<CommonPrefabs>();
+	}
+
 	void OnMouseDown()
 	{
-		print("dsadasd");
-		if (Utilities.BuildVerticalWall)
+		if (Utilities.SelectedBuilding == Building.HorizontalWall)
 		{
-			//wallGO = Instantiate(wallPrefab, new Vector3(nodes[i, j].transform.position.x, nodes[i, j].transform.position.y - 0.5f, nodes[i, j].transform.position.z), Quaternion.AngleAxis(90, new Vector3(0, 0, 1)));
+			if (!WallExists(Side.Down))
+			{
+				wallsObject[0] = Instantiate(prefabs.WallPrefab, new Vector3(transform.position.x, transform.position.y - 0.5f, transform.position.z), Quaternion.AngleAxis(90, new Vector3(0, 0, 1)));
 
-			AddWall(Side.Right);
+				AddWall(Side.Down);
+			}
+		}
+		else if (Utilities.SelectedBuilding == Building.VerticalWall)
+		{
+			if (!WallExists(Side.Right))
+			{
+				wallsObject[1] = Instantiate(prefabs.WallPrefab, new Vector3(transform.position.x + 0.5f, transform.position.y, transform.position.z), Quaternion.identity);
+
+				AddWall(Side.Right);
+			}
+		}
+		else if (Utilities.SelectedBuilding == Building.RemoveHorizontalWall)
+		{
+			if (WallExists(Side.Down))
+			{
+				Destroy(wallsObject[0]);
+
+				RemoveWall(Side.Down);
+			}
 		}
 		else
 		{
-			AddWall(Side.Down);
+			if (WallExists(Side.Right))
+			{
+				Destroy(wallsObject[1]);
+
+				RemoveWall(Side.Right);
+			}
 		}
 	}
 
 	public void AddWall(Side side)
 	{
-		switch (side)
-		{
-			case Side.Left:
-				walls[(int)Side.Left] = true;
-				break;
-			case Side.Right:
-				walls[(int)Side.Right] = true;
-				break;
-			case Side.Up:
-				walls[(int)Side.Up] = true;
-				break;
-			case Side.Down:
-				walls[(int)Side.Down] = true;
-				break;
-			default:
-				break;
-		}
+		walls[(int)side] = true;
 	}
 
 	public void RemoveWall(Side side)
 	{
-		switch (side)
-		{
-			case Side.Left:
-				walls[(int)Side.Left] = false;
-				break;
-			case Side.Right:
-				walls[(int)Side.Right] = false;
-				break;
-			case Side.Up:
-				walls[(int)Side.Up] = false;
-				break;
-			case Side.Down:
-				walls[(int)Side.Down] = false;
-				break;
-			default:
-				break;
-		}
+		walls[(int)side] = false;
 	}
 
-	public bool AllowedMove(Side side)
+	public bool WallExists(Side side)
 	{
-		return !walls[(int)side];
+		return walls[(int)side];
 	}
 
 	public void PushNeighbors(GameObject[,] nodes)
@@ -111,19 +113,19 @@ public class Node : MonoBehaviour
 		neighbors.Clear();
 
 		//LRUD
-		if (AllowedMove(Side.Left))
+		if (!WallExists(Side.Left))
 		{
 			neighbors.Add(nodes[I, J - 1]);
 		}
-		if (AllowedMove(Side.Right))
+		if (!WallExists(Side.Right))
 		{
 			neighbors.Add(nodes[I, J + 1]);
 		}
-		if (AllowedMove(Side.Up))
+		if (!WallExists(Side.Up))
 		{
 			neighbors.Add(nodes[I - 1, J]);
 		}
-		if (AllowedMove(Side.Down))
+		if (!WallExists(Side.Down))
 		{
 			neighbors.Add(nodes[I + 1, J]);
 		}
