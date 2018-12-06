@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Node : MonoBehaviour
 {
@@ -53,8 +52,13 @@ public class Node : MonoBehaviour
 		prefabs = FindObjectOfType<CommonPrefabs>();
 	}
 
-	void OnMouseDown()
+	protected void OnMouseDown()
 	{
+		if (!SceneManager.GetActiveScene().name.Equals("creation"))
+		{
+			return;
+		}
+
 		if (Utilities.SelectedBuilding == Building.HorizontalWall)
 		{
 			if (!WallExists(Side.Down))
