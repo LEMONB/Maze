@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -25,13 +26,6 @@ public class MapGeneratorKruskal : MonoBehaviour
 	private Dictionary<int, List<GameObject>> sets = new Dictionary<int, List<GameObject>>();
 
 	public bool mapIsGenerated = false;
-
-	void Awake()
-	{
-		// GenerateMaze(fieldWidth, fieldHeight);
-		// Camera.main.transform.position = new Vector3(fieldWidth / 2, -fieldHeight / 2 + 0.5f, Camera.main.transform.position.z);
-		// Camera.main.orthographicSize = fieldHeight / 2 + 1;
-	}
 
 	public void GenerateOuterWalls(int width, int height)
 	{
@@ -69,6 +63,68 @@ public class MapGeneratorKruskal : MonoBehaviour
 						BuildWall(i, j, Side.Right, true);
 					else
 						BuildWall(i, j, Side.Right);
+				}
+			}
+		}
+	}
+
+	public void GenerateMaze(NodesModel nodesModel)
+	{
+		GenerateOuterWalls(nodesModel.width, nodesModel.height);
+
+		ConvertModelToNodes(nodesModel);
+
+		int height = nodesModel.height;
+		int width = nodesModel.width;
+
+		for (int i = 0; i < height; i++)        // Spawn Vertical Walls
+		{
+			for (int j = 0; j < width - 1; j++)
+			{
+				if (nodes[i, j].GetComponent<Node>().walls[(int)Side.Right])
+				{
+					WallStruct newWall = new WallStruct
+					{
+						firstAdjacentNode = nodes[i, j],
+						secondAdjacentNode = nodes[i, j + 1],
+						gameObject = BuildWall(i, j, Side.Right),
+						horizontal = false
+					};
+
+					walls.Add(newWall);
+				}
+			}
+		}
+
+		for (int i = 0; i < height - 1; i++)        // Spawn Horizontal Walls
+		{
+			for (int j = 0; j < width; j++)
+			{
+				if (nodes[i, j].GetComponent<Node>().walls[(int)Side.Down])
+				{
+					WallStruct newWall = new WallStruct
+					{
+						firstAdjacentNode = nodes[i, j],
+						secondAdjacentNode = nodes[i + 1, j],
+						gameObject = BuildWall(i, j, Side.Down),
+						horizontal = true
+					};
+
+					walls.Add(newWall);
+				}
+			}
+		}
+	}
+
+	private void ConvertModelToNodes(NodesModel nodesModel)
+	{
+		for (int i = 0; i < nodesModel.height; i++)
+		{
+			for (int j = 0; j < nodesModel.width; j++)
+			{
+				for (int k = 0; k < 4; k++)
+				{
+					nodes[i, j].GetComponent<Node>().walls[k] = nodesModel.walls[i, j, k];
 				}
 			}
 		}

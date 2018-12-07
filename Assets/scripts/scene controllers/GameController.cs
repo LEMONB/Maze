@@ -31,9 +31,9 @@ public class GameController : BaseController
 		Utilities.ShowConstruction = !Utilities.ShowConstruction;
 
 		if (Utilities.ShowConstruction)
-			showGenerationButton.GetComponent<Text>().text = "Показ строительства (выкл)";
+			showGenerationButton.GetComponent<Text>().text = "Показ генерации (выкл)";
 		else
-			showGenerationButton.GetComponent<Text>().text = "Показ строительства (вкл)";
+			showGenerationButton.GetComponent<Text>().text = "Показ генерации (вкл)";
 	}
 
 	public void ShowControls()

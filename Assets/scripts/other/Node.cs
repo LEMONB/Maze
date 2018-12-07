@@ -8,7 +8,7 @@ public class Node : MonoBehaviour
 
 	private GameObject[] wallsObject = new GameObject[2];
 
-	private bool[] walls = new bool[4];
+	public bool[] walls = new bool[4];
 
 	public Sprite visitedNodeSprite;
 	public Node previous;

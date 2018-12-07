@@ -8,15 +8,11 @@ public class CreationController : BaseController
 {
 	public Text selectedBuildingText;
 
-	private ScrollRect savesScrollView;
-
 	protected override void Start()
 	{
 		base.Start();
 
 		mapGen.GenerateOuterWalls(Utilities.FieldWidth, Utilities.FieldHeight);
-
-		savesScrollView = FindObjectOfType<ScrollRect>();
 	}
 
 	public void SwitchSelectedBuilding()
@@ -46,43 +42,69 @@ public class CreationController : BaseController
 		}
 	}
 
-	private void CreateMapFromFile(GameObject[] nodes)
-	{
-
-	}
-
 	public void SaveMapToFile()
 	{
 		BinaryFormatter bf = new BinaryFormatter();
 		FileStream file = File.Create(Application.persistentDataPath + @"\" + DateTime.Now.ToString("dd-MM-yyyy HH.mm.ss"));
 
-		NodesModel nm = new NodesModel(mapGen.nodes.GetLength(0), mapGen.nodes.GetLength(1));
-		for (int i = 0; i < mapGen.nodes.GetLength(0); i++)
-		{
-			for (int j = 0; j < mapGen.nodes.GetLength(1); j++)
-			{
-				nm.nodes[i, j] = mapGen.nodes[i, j].GetComponent<Node>();
-			}
-		}
+		NodesModel nm = new NodesModel(mapGen.nodes);
 
 		bf.Serialize(file, nm);
 		file.Close();
 	}
 
-	public void LoadAllSaves()
-	{
-		var fileNames = Directory.GetFiles(Application.persistentDataPath);
-		//savesScrollView.content.
-	}
+	//public void LoadAllSavesToScrollView()
+	//{
+	//	contentGO.transform.DetachChildren();
+
+	//	var fileNames = Directory.GetFiles(Application.persistentDataPath).Select(Path.GetFileName).ToArray();
+	//	foreach (var item in fileNames)
+	//	{
+	//		GameObject button = Instantiate(savedFileButton);
+	//		button.GetComponentInChildren<Text>().text = item;
+	//		button.transform.SetParent(contentGO.transform);
+	//		button.GetComponent<Button>().onClick.AddListener(() => CreateMapFromFile(item));
+	//		button.GetComponent<Button>().onClick.AddListener(() => SwitchCanvas(GameObject.Find("SavesToLoadCanvas")));
+	//		button.GetComponent<Button>().onClick.AddListener(() => SwitchCanvas(GameObject.Find("PauseCanvas")));
+	//	}
+	//}
+
+	//public void CreateMapFromFile(string fileName)
+	//{
+	//	FileStream file = File.Open(Application.persistentDataPath + @"\" + fileName, FileMode.Open);
+	//	BinaryFormatter bf = new BinaryFormatter();
+
+	//	NodesModel nm = (NodesModel)bf.Deserialize(file);
+
+	//	file.Close();
+
+	//	mapGen.GenerateMaze(nm);
+	//}
 }
 
-[Serializable]
-public class NodesModel
-{
-	public Node[,] nodes;
+//[Serializable]
+//public class NodesModel
+//{
+//	public int width;
+//	public int height;
+//	public bool[,,] walls;
 
-	public NodesModel(int i, int j)
-	{
-		nodes = new Node[i, j];
-	}
-}
+//	public NodesModel(GameObject[,] nodes)
+//	{
+//		height = nodes.GetLength(0);
+//		width = nodes.GetLength(1);
+
+//		walls = new bool[height, width, 4];
+
+//		for (int i = 0; i < height; i++)
+//		{
+//			for (int j = 0; j < width; j++)
+//			{
+//				for (int k = 0; k < 4; k++)
+//				{
+//					walls[i, j, k] = nodes[i, j].GetComponent<Node>().walls[k];
+//				}
+//			}
+//		}
+//	}
+//}
