@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AStar : MonoBehaviour
 {
-	MapGeneratorKruskal mapGen;
+	MapGenerator mapGen;
 	List<Node> path = new List<Node>();
 
 	float Heuristic(Node from, Node target)
@@ -15,7 +15,7 @@ public class AStar : MonoBehaviour
 		return d;
 	}
 
-	public void FindPath(Node startNode, Node targetNode, bool visualization = true)
+	public bool FindPath(Node startNode, Node targetNode, bool visualization = true)
 	{
 		Node current = null;
 		List<Node> openSet = new List<Node>();
@@ -27,7 +27,7 @@ public class AStar : MonoBehaviour
 			int winnerIndex = 0;
 			for (int i = 0; i < openSet.Count; i++)
 			{
-				if (openSet[i].F < openSet[winnerIndex].F)
+				if (openSet[i].f < openSet[winnerIndex].f)
 				{
 					winnerIndex = i;
 				}
@@ -38,49 +38,51 @@ public class AStar : MonoBehaviour
 			if (current == targetNode)
 			{
 				ReconstructPath(current, visualization);
-				return;
+				return true;
 			}
 
 			openSet.Remove(current);
-			current.IsOpened = false;
-			current.IsClosed = true;
+			current.isOpened = false;
+			current.isClosed = true;
 
 			for (int i = 0; i < current.neighbors.Count; i++)
 			{
 				Node neighbor = current.neighbors[i].GetComponent<Node>();
-				if (neighbor.IsClosed == false)
+				if (neighbor.isClosed == false)
 				{
-					float tempG = current.G + Heuristic(neighbor, current);
+					float tempG = current.g + Heuristic(neighbor, current);
 
 					// Is this a better path than before?
 					bool newPath = false;
-					if (neighbor.IsOpened)
+					if (neighbor.isOpened)
 					{
-						if (tempG < neighbor.G)
+						if (tempG < neighbor.g)
 						{
-							neighbor.G = tempG;
+							neighbor.g = tempG;
 							newPath = true;
 						}
 					}
 					else
 					{
-						neighbor.G = tempG;
+						neighbor.g = tempG;
 						newPath = true;
 						openSet.Add(neighbor);
-						neighbor.IsOpened = true;
+						neighbor.isOpened = true;
 					}
 
 					// Yes, it's a better path
 					if (newPath)
 					{
-						neighbor.H = Heuristic(neighbor, targetNode);
-						neighbor.F = neighbor.G + neighbor.H;
+						neighbor.h = Heuristic(neighbor, targetNode);
+						neighbor.f = neighbor.g + neighbor.h;
 						neighbor.previous = current;
 					}
 				}
 			}
 		}
+
 		ReconstructPath(current, visualization);
+		return false;
 	}
 
 	void ReconstructPath(Node from, bool visualization = true)

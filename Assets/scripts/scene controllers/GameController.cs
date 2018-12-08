@@ -7,8 +7,7 @@ using UnityEngine.UI;
 
 public class GameController : BaseController
 {
-	public GameObject playerPrefab;
-	PlayerMovement playerScript;
+	private PlayerMovement playerMovement;
 
 	public Button showGenerationButton;
 	public Button showControlsButton;
@@ -20,7 +19,7 @@ public class GameController : BaseController
 
 		mapGen.GenerateMaze(Utilities.FieldWidth, Utilities.FieldHeight);
 
-		playerScript = Instantiate(playerPrefab, mapGen.nodes[0, 0].transform.position, Quaternion.identity).GetComponent<PlayerMovement>();
+		playerMovement = MapGenerator.player.GetComponent<PlayerMovement>();
 
 		if (Utilities.ShowControls)
 			controlsImage.SetActive(true);
@@ -43,9 +42,9 @@ public class GameController : BaseController
 
 	public void HintMove()
 	{
-		Node hintNode = GetComponent<AStar>().GetHint(mapGen.nodes[playerScript.currI, playerScript.currJ].GetComponent<Node>(), mapGen.nodes[mapGen.nodes.GetLength(0) - 1, mapGen.nodes.GetLength(1) - 1].GetComponent<Node>());
-		int dI = hintNode.I - playerScript.currI;
-		int dJ = hintNode.J - playerScript.currJ;
-		playerScript.Move(dI, dJ);
+		Node hintNode = GetComponent<AStar>().GetHint(mapGen.nodes[playerMovement.currI, playerMovement.currJ].GetComponent<Node>(), mapGen.nodes[mapGen.nodes.GetLength(0) - 1, mapGen.nodes.GetLength(1) - 1].GetComponent<Node>());
+		int dI = hintNode.i - playerMovement.currI;
+		int dJ = hintNode.j - playerMovement.currJ;
+		playerMovement.Move(dI, dJ);
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
@@ -7,104 +8,72 @@ using UnityEngine.UI;
 public class CreationController : BaseController
 {
 	public Text selectedBuildingText;
+	public Image bulldozerImage;
+	public GameObject solveWarning;
+
+	private AStar aStar;
 
 	protected override void Start()
 	{
 		base.Start();
 
 		mapGen.GenerateOuterWalls(Utilities.FieldWidth, Utilities.FieldHeight);
+		mapGen.SpawnPlayerAndFinish();
+		aStar = GetComponent<AStar>();
 	}
 
-	public void SwitchSelectedBuilding()
+	public void SelectBuilding(int building)
 	{
-		Utilities.SelectedBuilding++;
-		if ((int)Utilities.SelectedBuilding == Enum.GetNames(typeof(Building)).Length)
-		{
-			Utilities.SelectedBuilding = 0;
-		}
+		Utilities.SelectedBuilding = (Building)building;
+	}
 
-		switch (Utilities.SelectedBuilding)
-		{
-			case Building.HorizontalWall:
-				selectedBuildingText.text = "_";
-				break;
-			case Building.VerticalWall:
-				selectedBuildingText.text = "|";
-				break;
-			case Building.RemoveHorizontalWall:
-				selectedBuildingText.text = "_X";
-				break;
-			case Building.RemoveVerticalWall:
-				selectedBuildingText.text = "|X";
-				break;
-			default:
-				break;
-		}
+	public void DeconstructBuilding(bool value)
+	{
+		bulldozerImage.color = new Color(bulldozerImage.color.r, bulldozerImage.color.g, bulldozerImage.color.b, value ? 1f : 0.5f);
+		Utilities.DeconstructingBuilding = value;
 	}
 
 	public void SaveMapToFile()
 	{
-		BinaryFormatter bf = new BinaryFormatter();
-		FileStream file = File.Create(Application.persistentDataPath + @"\" + DateTime.Now.ToString("dd-MM-yyyy HH.mm.ss"));
+		if (ValidateMap())
+		{
+			BinaryFormatter bf = new BinaryFormatter();
+			FileStream file = File.Create(Application.persistentDataPath + @"\" + DateTime.Now.ToString("dd-MM-yyyy HH.mm.ss"));
 
-		NodesModel nm = new NodesModel(mapGen.nodes);
+			NodesModel nm = new NodesModel(mapGen.nodes, MapGenerator.startNode, MapGenerator.finishNode);
 
-		bf.Serialize(file, nm);
-		file.Close();
+			bf.Serialize(file, nm);
+			file.Close();
+
+			StartCoroutine(ShowMessage("Лабиринт успешно сохранен!", new Color(0.098f, 0.756f, 0.181f, 0.9725f)));
+		}
+		else
+		{
+			StartCoroutine(ShowMessage("Лабиринт не имеет решения!", new Color(0.755f, 0.105f, 0.098f, 0.972f)));
+		}
 	}
 
-	//public void LoadAllSavesToScrollView()
-	//{
-	//	contentGO.transform.DetachChildren();
+	private bool ValidateMap()
+	{
+		foreach (var item in mapGen.nodes)
+		{
+			item.GetComponent<Node>().PushNeighbors(mapGen.nodes);
+		}
 
-	//	var fileNames = Directory.GetFiles(Application.persistentDataPath).Select(Path.GetFileName).ToArray();
-	//	foreach (var item in fileNames)
-	//	{
-	//		GameObject button = Instantiate(savedFileButton);
-	//		button.GetComponentInChildren<Text>().text = item;
-	//		button.transform.SetParent(contentGO.transform);
-	//		button.GetComponent<Button>().onClick.AddListener(() => CreateMapFromFile(item));
-	//		button.GetComponent<Button>().onClick.AddListener(() => SwitchCanvas(GameObject.Find("SavesToLoadCanvas")));
-	//		button.GetComponent<Button>().onClick.AddListener(() => SwitchCanvas(GameObject.Find("PauseCanvas")));
-	//	}
-	//}
+		return aStar.FindPath(MapGenerator.startNode.GetComponent<Node>(), MapGenerator.finishNode.GetComponent<Node>(), false);
+	}
 
-	//public void CreateMapFromFile(string fileName)
-	//{
-	//	FileStream file = File.Open(Application.persistentDataPath + @"\" + fileName, FileMode.Open);
-	//	BinaryFormatter bf = new BinaryFormatter();
+	IEnumerator ShowMessage(string message, Color color)
+	{
+		solveWarning.SetActive(true);
+		solveWarning.GetComponent<Image>().color = color;
+		solveWarning.GetComponentInChildren<Text>().text = message;
 
-	//	NodesModel nm = (NodesModel)bf.Deserialize(file);
+		for (int i = 0; i < 3; i++)
+		{
+			yield return new WaitForSecondsRealtime(0.5f);
+		}
 
-	//	file.Close();
-
-	//	mapGen.GenerateMaze(nm);
-	//}
+		solveWarning.SetActive(false);
+	}
 }
-
-//[Serializable]
-//public class NodesModel
-//{
-//	public int width;
-//	public int height;
-//	public bool[,,] walls;
-
-//	public NodesModel(GameObject[,] nodes)
-//	{
-//		height = nodes.GetLength(0);
-//		width = nodes.GetLength(1);
-
-//		walls = new bool[height, width, 4];
-
-//		for (int i = 0; i < height; i++)
-//		{
-//			for (int j = 0; j < width; j++)
-//			{
-//				for (int k = 0; k < 4; k++)
-//				{
-//					walls[i, j, k] = nodes[i, j].GetComponent<Node>().walls[k];
-//				}
-//			}
-//		}
-//	}
-//}

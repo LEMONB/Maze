@@ -8,14 +8,14 @@ using UnityEngine.UI;
 
 public class BaseController : MonoBehaviour
 {
-	protected MapGeneratorKruskal mapGen;
+	protected MapGenerator mapGen;
 
-	public GameObject savedFileButton;
-	public GameObject contentGO;
+	protected GameObject savedFileButton;
+	protected GameObject contentGO;
 
 	protected virtual void Start()
 	{
-		mapGen = GameObject.Find("MapGenerator").GetComponent<MapGeneratorKruskal>();
+		mapGen = GameObject.Find("MapGenerator").GetComponent<MapGenerator>();
 
 		Camera.main.transform.position = new Vector3(Utilities.FieldWidth / 2 - 0.5f, -Utilities.FieldHeight / 2 + 0.5f, Camera.main.transform.position.z);
 		Camera.main.orthographicSize = Math.Max(Utilities.FieldHeight, Utilities.FieldWidth) + 1;
@@ -71,9 +71,15 @@ public class NodesModel
 {
 	public int width;
 	public int height;
+
 	public bool[,,] walls;
 
-	public NodesModel(GameObject[,] nodes)
+	public int startPosI;
+	public int startPosJ;
+	public int finishPosI;
+	public int finishPosJ;
+
+	public NodesModel(GameObject[,] nodes, GameObject startNode, GameObject finishNode)
 	{
 		height = nodes.GetLength(0);
 		width = nodes.GetLength(1);
@@ -90,5 +96,10 @@ public class NodesModel
 				}
 			}
 		}
+
+		startPosI = startNode.GetComponent<Node>().i;
+		startPosJ = startNode.GetComponent<Node>().j;
+		finishPosI = finishNode.GetComponent<Node>().i;
+		finishPosJ = finishNode.GetComponent<Node>().j;
 	}
 }

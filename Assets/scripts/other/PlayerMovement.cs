@@ -2,10 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
-	MapGeneratorKruskal mapGen;
+	MapGenerator mapGen;
 	GameController gController;
 
 	public int currI = 0;
@@ -16,8 +17,14 @@ public class PlayerMovement : MonoBehaviour
 
 	void Start()
 	{
-		mapGen = GameObject.Find("MapGenerator").GetComponent<MapGeneratorKruskal>();
+		if (SceneManager.GetActiveScene().name.Equals("creation"))
+			return;
+
+		mapGen = GameObject.Find("MapGenerator").GetComponent<MapGenerator>();
 		gController = GameObject.Find("GameController").GetComponent<GameController>();
+
+		currI = MapGenerator.startNode.GetComponent<Node>().i;
+		currJ = MapGenerator.startNode.GetComponent<Node>().j;
 		mapGen.nodes[currI, currJ].GetComponent<Node>().IsVisited = true;
 
 		screenWidth = Screen.width;
@@ -26,7 +33,7 @@ public class PlayerMovement : MonoBehaviour
 
 	void Update()
 	{
-		if (!mapGen.mapIsGenerated || Time.timeScale < 0.1f)
+		if (SceneManager.GetActiveScene().name.Equals("creation") || !mapGen.mapIsGenerated || Time.timeScale < 0.1f)
 			return;
 
 		if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
@@ -71,7 +78,7 @@ public class PlayerMovement : MonoBehaviour
 			Utilities.ShowControls = false;
 		}
 
-		if (!mapGen.GetComponent<MapGeneratorKruskal>().nodes[currI, currJ].GetComponent<Node>().WallExists(movement))
+		if (!mapGen.GetComponent<MapGenerator>().nodes[currI, currJ].GetComponent<Node>().WallExists(movement))
 			switch (movement)
 			{
 				case Side.Left:
@@ -98,7 +105,7 @@ public class PlayerMovement : MonoBehaviour
 		transform.position = mapGen.nodes[currI, currJ].transform.position;
 		mapGen.nodes[currI, currJ].GetComponent<Node>().IsVisited = true;
 
-		if (mapGen.nodes[currI, currJ].GetComponent<Node>().IsFinish)
+		if (mapGen.nodes[currI, currJ] == MapGenerator.finishNode)
 		{
 			gController.LoadScene("main");
 		}

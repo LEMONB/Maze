@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum Side { Left = 0, Right, Up, Down };
-public enum Building { HorizontalWall = 0, VerticalWall, RemoveHorizontalWall, RemoveVerticalWall };
+public enum Building { HorizontalWall = 0, VerticalWall, Start, Finish };
 
 public static class Utilities
 {
@@ -12,10 +12,7 @@ public static class Utilities
 	public static int FieldHeight { get; set; } = 10;
 
 	public static Building SelectedBuilding = Building.HorizontalWall;
-
-	[SerializeField]
-	public static GameObject WallPrefab { get; set; }
-
+	public static bool DeconstructingBuilding = false;
 
 	public static bool ShowConstruction { get; set; } = false;
 
