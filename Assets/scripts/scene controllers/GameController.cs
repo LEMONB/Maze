@@ -7,19 +7,18 @@ using UnityEngine.UI;
 
 public class GameController : BaseController
 {
-	private PlayerMovement playerMovement;
-
 	public Button showGenerationButton;
 	public Button showControlsButton;
 	public GameObject controlsImage;
+
+	private AStar aStar;
 
 	protected override void Start()
 	{
 		base.Start();
 
 		mapGen.GenerateMaze(Utilities.FieldWidth, Utilities.FieldHeight);
-
-		playerMovement = MapGenerator.player.GetComponent<PlayerMovement>();
+		aStar = GetComponent<AStar>();
 
 		if (Utilities.ShowControls)
 			controlsImage.SetActive(true);
@@ -40,11 +39,8 @@ public class GameController : BaseController
 		controlsImage.SetActive(true);
 	}
 
-	public void HintMove()
+	public void SolveMaze()
 	{
-		Node hintNode = GetComponent<AStar>().GetHint(mapGen.nodes[playerMovement.currI, playerMovement.currJ].GetComponent<Node>(), mapGen.nodes[mapGen.nodes.GetLength(0) - 1, mapGen.nodes.GetLength(1) - 1].GetComponent<Node>());
-		int dI = hintNode.i - playerMovement.currI;
-		int dJ = hintNode.j - playerMovement.currJ;
-		playerMovement.Move(dI, dJ);
+		aStar.FindPath(MapGenerator.startNode.GetComponent<Node>(), MapGenerator.finishNode.GetComponent<Node>());
 	}
 }

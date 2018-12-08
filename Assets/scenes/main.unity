@@ -283,7 +283,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 206326055}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.25, y: 0.119999886, z: 20}
+  m_LocalPosition: {x: 0, y: 0, z: 20}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1815439965}
@@ -749,7 +749,7 @@ GameObject:
   - component: {fileID: 378615733}
   - component: {fileID: 378615732}
   m_Layer: 5
-  m_Name: HintButton
+  m_Name: SolveButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -771,7 +771,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 151.5, y: -69}
+  m_AnchoredPosition: {x: 151.5, y: -92}
   m_SizeDelta: {x: 303, y: 138}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &378615732
@@ -814,7 +814,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1139263285}
-        m_MethodName: HintMove
+        m_MethodName: SolveMaze
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1802,7 +1802,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: c21a397d5712e2143b595c3c914ec7f9, type: 3}
-    m_FontSize: 74
+    m_FontSize: 47
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 6
@@ -1813,7 +1813,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u0425\u043E\u0434"
+  m_Text: "\u0420\u0435\u0448\u0435\u043D\u0438\u0435"
 --- !u!222 &1337362092
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2053,7 +2053,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -152, y: -69}
+  m_AnchoredPosition: {x: -152, y: -92}
   m_SizeDelta: {x: 303, y: 138}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1596627221
@@ -2201,7 +2201,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: c21a397d5712e2143b595c3c914ec7f9, type: 3}
-    m_FontSize: 74
+    m_FontSize: 47
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 6
@@ -2954,11 +2954,22 @@ MonoBehaviour:
         m_MethodName: SwitchCanvas
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 1211113713}
+          m_ObjectArgument: {fileID: 273387721}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: menu
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1139263285}
+        m_MethodName: SwitchCanvas
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 1211113713}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 1139263285}

@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class Node : MonoBehaviour
 {
-	private GameObject[] wallsObject = new GameObject[2];
+	private GameObject[] wallObjects = new GameObject[2];
 
 	public bool[] walls = new bool[4];
 
@@ -40,10 +40,10 @@ public class Node : MonoBehaviour
 
 	protected void OnMouseDown()
 	{
-		if (!SceneManager.GetActiveScene().name.Equals("creation"))
+		if (EventSystem.current.IsPointerOverGameObject())
 			return;
 
-		if (EventSystem.current.IsPointerOverGameObject())
+		if (!SceneManager.GetActiveScene().name.Equals("creation") || Time.timeScale < 0.1f)
 			return;
 
 		if (Utilities.SelectedBuilding == Building.HorizontalWall)
@@ -52,7 +52,7 @@ public class Node : MonoBehaviour
 			{
 				if (WallExists(Side.Down))
 				{
-					Destroy(wallsObject[0]);
+					Destroy(wallObjects[0]);
 
 					RemoveWall(Side.Down);
 				}
@@ -61,7 +61,7 @@ public class Node : MonoBehaviour
 			{
 				if (!WallExists(Side.Down))
 				{
-					wallsObject[0] = Instantiate(Resources.Load<GameObject>("wall"), new Vector3(transform.position.x, transform.position.y - 0.5f, transform.position.z), Quaternion.AngleAxis(90, new Vector3(0, 0, 1)));
+					wallObjects[0] = Instantiate(Resources.Load<GameObject>("wall"), new Vector3(transform.position.x, transform.position.y - 0.5f, transform.position.z), Quaternion.AngleAxis(90, new Vector3(0, 0, 1)));
 
 					AddWall(Side.Down);
 				}
@@ -73,7 +73,7 @@ public class Node : MonoBehaviour
 			{
 				if (WallExists(Side.Right))
 				{
-					Destroy(wallsObject[1]);
+					Destroy(wallObjects[1]);
 
 					RemoveWall(Side.Right);
 				}
@@ -82,7 +82,7 @@ public class Node : MonoBehaviour
 			{
 				if (!WallExists(Side.Right))
 				{
-					wallsObject[1] = Instantiate(Resources.Load<GameObject>("wall"), new Vector3(transform.position.x + 0.5f, transform.position.y, transform.position.z), Quaternion.identity);
+					wallObjects[1] = Instantiate(Resources.Load<GameObject>("wall"), new Vector3(transform.position.x + 0.5f, transform.position.y, transform.position.z), Quaternion.identity);
 
 					AddWall(Side.Right);
 				}
@@ -156,5 +156,13 @@ public class Node : MonoBehaviour
 		//     this.neighbors.push(_nodes[this.i][this.j - 1]);
 		// }
 
+	}
+
+	private void OnDestroy()
+	{
+		foreach (var item in wallObjects)
+		{
+			Destroy(item);
+		}
 	}
 }

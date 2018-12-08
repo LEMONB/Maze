@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -19,6 +20,7 @@ public class BaseController : MonoBehaviour
 
 		Camera.main.transform.position = new Vector3(Utilities.FieldWidth / 2 - 0.5f, -Utilities.FieldHeight / 2 + 0.5f, Camera.main.transform.position.z);
 		Camera.main.orthographicSize = Math.Max(Utilities.FieldHeight, Utilities.FieldWidth) + 1;
+		Camera.main.transform.GetChild(0).GetComponent<SpriteRenderer>().size = new Vector2(Camera.main.aspect * Camera.main.orthographicSize * 2, Camera.main.orthographicSize * 2);
 
 		savedFileButton = Resources.Load("SavedFileButton") as GameObject;
 	}
@@ -41,7 +43,10 @@ public class BaseController : MonoBehaviour
 		contentGO = GameObject.Find("Content");
 		contentGO.transform.DetachChildren();
 
-		var fileNames = Directory.GetFiles(Application.persistentDataPath).Select(Path.GetFileName).ToArray();
+		DirectoryInfo dI = new DirectoryInfo(Application.persistentDataPath);
+		FileInfo[] fileInfos = dI.GetFiles();
+		var fileNames = fileInfos.Select(x => x.Name).ToArray();
+
 		foreach (var item in fileNames)
 		{
 			GameObject button = Instantiate(savedFileButton);
@@ -49,13 +54,12 @@ public class BaseController : MonoBehaviour
 			button.transform.SetParent(contentGO.transform);
 			button.GetComponent<Button>().onClick.AddListener(() => CreateMapFromFile(item));
 			button.GetComponent<Button>().onClick.AddListener(() => SwitchCanvas(GameObject.Find("SavesToLoadCanvas")));
-			button.GetComponent<Button>().onClick.AddListener(() => SwitchCanvas(GameObject.Find("PauseCanvas")));
 		}
 	}
 
 	public void CreateMapFromFile(string fileName)
 	{
-		FileStream file = File.Open(Application.persistentDataPath + @"\" + fileName, FileMode.Open);
+		FileStream file = File.Open(Path.Combine(Application.persistentDataPath, fileName), FileMode.Open);
 		BinaryFormatter bf = new BinaryFormatter();
 
 		NodesModel nm = (NodesModel)bf.Deserialize(file);

@@ -37,13 +37,51 @@ public class CreationController : BaseController
 	{
 		if (ValidateMap())
 		{
+			//string item = DateTime.Now.ToString("dd-MM-yyyy HH.mm.ss") + ".dat";
+			//string androidFilePath = Path.Combine(Application.streamingAssetsPath, item);
+			//WWW www = new WWW(androidFilePath);
+
+			//while (www.isDone == false)
+			//{
+
+			//}
+
+			//androidFilePath = Application.persistentDataPath + name;
+			//File.WriteAllBytes(androidFilePath, www.bytes);
+
+			//if (File.Exists(androidFilePath))
+			//{
+			//	Debug.Log("File found!");
+			//	BinaryFormatter bf = new BinaryFormatter();
+
+			//	// 1. Construct a SurrogateSelector object
+			//	SurrogateSelector ss = new SurrogateSelector();
+			//	// 2. Add the ISerializationSurrogates to our new SurrogateSelector
+			//	AddSurrogates(ref ss);
+
+			//	// 3. Have the formatter use our surrogate selector
+			//	bf.SurrogateSelector = ss;
+
+			//	FileStream file = File.Open(androidFilePath, FileMode.Open);
+
+			//	SaveGame loadedGame = (SaveGame)bf.Deserialize(file);
+
+			//	file.Close();
+
+			//	return loadedGame;
+			//}
+
+			//var www = new WWW(Application.streamingAssetsPath + "/" + filename);
+			//File.WriteAllBytes(Application.persistentDataPath + "/" + fileName, www.bytes);
+
 			BinaryFormatter bf = new BinaryFormatter();
-			FileStream file = File.Create(Application.persistentDataPath + @"\" + DateTime.Now.ToString("dd-MM-yyyy HH.mm.ss"));
+			string fileName = DateTime.Now.ToString("dd-MM-yyyy HH.mm.ss") + ".dat";
+			using (FileStream file = File.Create(Path.Combine(Application.persistentDataPath, fileName)))
+			{
+				NodesModel nm = new NodesModel(mapGen.nodes, MapGenerator.startNode, MapGenerator.finishNode);
 
-			NodesModel nm = new NodesModel(mapGen.nodes, MapGenerator.startNode, MapGenerator.finishNode);
-
-			bf.Serialize(file, nm);
-			file.Close();
+				bf.Serialize(file, nm);
+			}
 
 			StartCoroutine(ShowMessage("Лабиринт успешно сохранен!", new Color(0.098f, 0.756f, 0.181f, 0.9725f)));
 		}
