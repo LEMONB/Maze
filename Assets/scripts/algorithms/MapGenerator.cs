@@ -15,8 +15,6 @@ public class MapGenerator : MonoBehaviour
 		public bool horizontal;
 	}
 
-	public Sprite finishNodeSprite;
-
 	public GameObject[,] nodes;
 
 	public static GameObject startNode;

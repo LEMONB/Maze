@@ -6,16 +6,16 @@ using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
-	MapGenerator mapGen;
-	GameController gController;
+	private MapGenerator mapGen;
+	private GameController gController;
 
 	public int currI = 0;
 	public int currJ = 0;
 
-	int screenWidth;
-	int screenHeight;
+	private int screenWidth;
+	private int screenHeight;
 
-	void Start()
+	protected void Start()
 	{
 		if (SceneManager.GetActiveScene().name.Equals("creation"))
 			return;
@@ -31,7 +31,7 @@ public class PlayerMovement : MonoBehaviour
 		screenHeight = Screen.height;
 	}
 
-	void Update()
+	protected void Update()
 	{
 		if (SceneManager.GetActiveScene().name.Equals("creation") || !mapGen.mapIsGenerated || Time.timeScale < 0.1f)
 			return;
@@ -70,7 +70,7 @@ public class PlayerMovement : MonoBehaviour
 		}
 	}
 
-	public void Move(Side movement)
+	public void Move(Side side)
 	{
 		if (gController.controlsImage.activeSelf)
 		{
@@ -78,8 +78,8 @@ public class PlayerMovement : MonoBehaviour
 			Utilities.ShowControls = false;
 		}
 
-		if (!mapGen.GetComponent<MapGenerator>().nodes[currI, currJ].GetComponent<Node>().WallExists(movement))
-			switch (movement)
+		if (!mapGen.GetComponent<MapGenerator>().nodes[currI, currJ].GetComponent<Node>().WallExists(side))
+			switch (side)
 			{
 				case Side.Left:
 					Move(-1, 0);

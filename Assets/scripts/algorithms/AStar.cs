@@ -4,10 +4,9 @@ using UnityEngine;
 
 public class AStar : MonoBehaviour
 {
-	MapGenerator mapGen;
-	List<Node> path = new List<Node>();
+	private List<Node> path = new List<Node>();
 
-	float Heuristic(Node from, Node target)
+	private float Heuristic(Node from, Node target)
 	{
 		float d = Vector3.Distance(from.transform.position, target.transform.position);   // Pythagorean
 																						  // float d = abs(from.i - target.i) + abs(from.j - target.j);    // Manhattan
@@ -85,7 +84,7 @@ public class AStar : MonoBehaviour
 		return false;
 	}
 
-	void ReconstructPath(Node from, bool visualization = true)
+	private void ReconstructPath(Node from, bool visualization = true)
 	{
 		Node temp = from;
 		path.Add(temp);
@@ -99,7 +98,7 @@ public class AStar : MonoBehaviour
 			VisualizePath();
 	}
 
-	IEnumerator ReconstructPathCoroutine(Node from)
+	private IEnumerator ReconstructPathCoroutine(Node from)
 	{
 		Node temp = from;
 		path.Add(temp);
@@ -116,7 +115,7 @@ public class AStar : MonoBehaviour
 		}
 	}
 
-	void VisualizePath()
+	private void VisualizePath()
 	{
 		foreach (var spot in path)
 		{

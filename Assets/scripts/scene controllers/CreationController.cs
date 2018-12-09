@@ -37,43 +37,6 @@ public class CreationController : BaseController
 	{
 		if (ValidateMap())
 		{
-			//string item = DateTime.Now.ToString("dd-MM-yyyy HH.mm.ss") + ".dat";
-			//string androidFilePath = Path.Combine(Application.streamingAssetsPath, item);
-			//WWW www = new WWW(androidFilePath);
-
-			//while (www.isDone == false)
-			//{
-
-			//}
-
-			//androidFilePath = Application.persistentDataPath + name;
-			//File.WriteAllBytes(androidFilePath, www.bytes);
-
-			//if (File.Exists(androidFilePath))
-			//{
-			//	Debug.Log("File found!");
-			//	BinaryFormatter bf = new BinaryFormatter();
-
-			//	// 1. Construct a SurrogateSelector object
-			//	SurrogateSelector ss = new SurrogateSelector();
-			//	// 2. Add the ISerializationSurrogates to our new SurrogateSelector
-			//	AddSurrogates(ref ss);
-
-			//	// 3. Have the formatter use our surrogate selector
-			//	bf.SurrogateSelector = ss;
-
-			//	FileStream file = File.Open(androidFilePath, FileMode.Open);
-
-			//	SaveGame loadedGame = (SaveGame)bf.Deserialize(file);
-
-			//	file.Close();
-
-			//	return loadedGame;
-			//}
-
-			//var www = new WWW(Application.streamingAssetsPath + "/" + filename);
-			//File.WriteAllBytes(Application.persistentDataPath + "/" + fileName, www.bytes);
-
 			BinaryFormatter bf = new BinaryFormatter();
 			string fileName = DateTime.Now.ToString("dd-MM-yyyy HH.mm.ss") + ".dat";
 			using (FileStream file = File.Create(Path.Combine(Application.persistentDataPath, fileName)))
