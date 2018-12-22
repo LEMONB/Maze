@@ -311,7 +311,7 @@ public class MapGenerator : MonoBehaviour
 		}
 	}
 
-	public GameObject BuildWall(int i, int j, Side side)
+	private GameObject BuildWall(int i, int j, Side side)
 	{
 		GameObject wallPrefab = Resources.Load<GameObject>("wall");
 		GameObject wallGO;
