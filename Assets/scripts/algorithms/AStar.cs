@@ -14,7 +14,7 @@ public class AStar : MonoBehaviour
 		return d;
 	}
 
-	public bool FindPath(Node startNode, Node targetNode, bool visualization = true)
+	public bool FindPath(Node startNode, Node targetNode)
 	{
 		Node current = null;
 		List<Node> openSet = new List<Node>();
@@ -36,7 +36,7 @@ public class AStar : MonoBehaviour
 
 			if (current == targetNode)
 			{
-				ReconstructPath(current, visualization);
+				ReconstructPath(current);
 				return true;
 			}
 
@@ -80,11 +80,11 @@ public class AStar : MonoBehaviour
 			}
 		}
 
-		ReconstructPath(current, visualization);
+		ReconstructPath(current);
 		return false;
 	}
 
-	private void ReconstructPath(Node from, bool visualization = true)
+	private void ReconstructPath(Node from)
 	{
 		Node temp = from;
 		path.Add(temp);
@@ -93,9 +93,6 @@ public class AStar : MonoBehaviour
 			path.Add(temp.previous);
 			temp = temp.previous;
 		}
-
-		if (visualization)
-			VisualizePath();
 	}
 
 	private IEnumerator ReconstructPathCoroutine(Node from)
@@ -115,17 +112,9 @@ public class AStar : MonoBehaviour
 		}
 	}
 
-	private void VisualizePath()
-	{
-		foreach (var spot in path)
-		{
-			spot.IsVisited = true;
-		}
-	}
-
 	public Node GetHint(Node startNode, Node targetNode)
 	{
-		FindPath(startNode, targetNode, false);
+		FindPath(startNode, targetNode);
 		Node hintNode = path[path.Count - 2];
 		return hintNode;
 	}

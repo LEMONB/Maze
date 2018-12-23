@@ -59,9 +59,10 @@ public class CreationController : BaseController
 		foreach (var item in mapGen.nodes)
 		{
 			item.GetComponent<Node>().PushNeighbors(mapGen.nodes);
+			item.GetComponent<Node>().ResetNode();
 		}
 
-		return aStar.FindPath(MapGenerator.startNode.GetComponent<Node>(), MapGenerator.finishNode.GetComponent<Node>(), false);
+		return aStar.FindPath(MapGenerator.startNode.GetComponent<Node>(), MapGenerator.finishNode.GetComponent<Node>());
 	}
 
 	IEnumerator ShowMessage(string message, Color color)

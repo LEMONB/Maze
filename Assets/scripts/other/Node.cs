@@ -158,6 +158,15 @@ public class Node : MonoBehaviour
 
 	}
 
+	public void ResetNode()
+	{
+		isClosed = false;
+		isOpened = false;
+		f = 0;
+		h = 0;
+		g = 0;
+	}
+
 	private void OnDestroy()
 	{
 		foreach (var item in wallObjects)

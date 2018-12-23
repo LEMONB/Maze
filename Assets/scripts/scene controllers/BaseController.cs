@@ -49,9 +49,8 @@ public class BaseController : MonoBehaviour
 
 		foreach (var item in fileNames)
 		{
-			GameObject button = Instantiate(savedFileButton);
+			GameObject button = Instantiate(savedFileButton, contentGO.transform, false);
 			button.GetComponentInChildren<Text>().text = item;
-			button.transform.SetParent(contentGO.transform);
 			button.GetComponent<Button>().onClick.AddListener(() => CreateMapFromFile(item));
 			button.GetComponent<Button>().onClick.AddListener(() => SwitchCanvas(GameObject.Find("SavesToLoadCanvas")));
 		}
